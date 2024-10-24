@@ -3,6 +3,8 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "./components/Navbar";
+import { ThemeProvider } from "@mui/material/styles";
+import { theme } from "./theme/theme";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -25,8 +27,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <AppRouterCacheProvider>
-          <Navbar />
-          <main style={{ padding: '2rem' }}>{children}</main>
+          <ThemeProvider theme={theme}>
+            <Navbar />
+            <main style={{ padding: '2rem' }}>{children}</main>
+          </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
     </html>
