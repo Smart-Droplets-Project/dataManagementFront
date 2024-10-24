@@ -1,22 +1,23 @@
 import Image from "next/image";
-import styles from "./page.module.css";
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          // className={styles.logo}
-          src="/images/Smart-droplets-logo.svg"
-          alt="Smart Droplets logo"
-          width={720}
-          height={152}
-          priority
-        />
-        <h2>Welcome to the Smart Droplets Dashboard!</h2>
+    <div>
+      <main>
+        <div className="flex flex-col items-center" >
+
+          <Image
+            src="/images/Smart-droplets-logo.svg"
+            alt="Smart Droplets logo"
+            width={720}
+            height={152}
+            priority
+          />
+          <h2>Welcome to the Smart Droplets Dashboard!</h2>
+        </div>
 
       </main>
-      <footer className={styles.footer}>
+      <footer >
         <a
           href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
           target="_blank"
