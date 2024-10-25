@@ -13,6 +13,10 @@ export interface AgriParcel {
         type: string;
         value: number;
     }
+    description?: {
+        type: string;
+        value: string;
+    }
     alternateName?: {
         type: string;
         value: string;
