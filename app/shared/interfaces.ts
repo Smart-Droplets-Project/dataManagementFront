@@ -8,6 +8,10 @@ export interface AgriParcel {
     address?: {
         type: string;
         value: string;
+    },
+    area?: {
+        type: string;
+        value: number;
     }
     alternateName?: {
         type: string;
@@ -23,11 +27,12 @@ export interface AgriParcel {
             type: string;
             features: [
                 {
-                    // type: string;
-                    // coordinates: any;
                     geometry: {
                         type: string;
                         coordinates: any;
+                    }
+                    properties: {
+                        name: string;
                     }
                 }
             ]

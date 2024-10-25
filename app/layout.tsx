@@ -5,6 +5,7 @@ import "./globals.css";
 import Navbar from "./components/Navbar";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "./theme/theme";
+import GridLayout from "./components/GridLayout";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -29,7 +30,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
             <Navbar />
-            <main style={{ padding: '2rem' }}>{children}</main>
+            <GridLayout>
+              <main style={{ padding: '2rem' }}>{children}</main>
+            </GridLayout>
           </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
