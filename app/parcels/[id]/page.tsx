@@ -3,11 +3,25 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { AgriParcel, Device, DeviceMeasurement } from '../../shared/interfaces';
 import ParcelMap from '../../components/ParcelMap';
+import { Card, CardContent, CardActions, Typography, Box, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent } from '@mui/material';
 import MeasurementLineChart from '../../components/MeasurementLineChart';
+
+const gridSizeOptions = [
+  { label: '25x25', value: 0.025 },
+  { label: '10x10', value: 0.01 },
+  { label: '5x5', value: 0.005 },
+];
+
 
 export default function ParcelPage() {
   const { id } = useParams();
   const [parcel, setParcel] = useState<AgriParcel | null>(null);
+
+  const [gridSize, setGridSize] = useState('0.025');
+
+  const handleGridSizeChange = (event: SelectChangeEvent) => {
+    setGridSize(event.target.value as string);
+  };
 
   const [device, setDevice] = useState<Device | null>(null);
   const [deviceMeasurements, setDeviceMeasurements] = useState<DeviceMeasurement[] | null>(null);
@@ -19,40 +33,40 @@ export default function ParcelPage() {
 
     const fetchDeviceMeasurements = async (deviceId: string | undefined) => {
 
-        try {
+      try {
 
-            const res = await fetch(`/api/devices/${deviceId}/measurements`);
-            const data = await res.json() as DeviceMeasurement[];
-            
-            console.log("DeviceMeasurements are:", data);  
+        const res = await fetch(`/api/devices/${deviceId}/measurements`);
+        const data = await res.json() as DeviceMeasurement[];
 
-            setDeviceMeasurements(data);
+        console.log("DeviceMeasurements are:", data);
 
-        } catch (err) {
-            setError('Failed to load device measurements');
-        } finally {
-            setLoading(false);
-        }
+        setDeviceMeasurements(data);
+
+      } catch (err) {
+        setError('Failed to load device measurements');
+      } finally {
+        setLoading(false);
+      }
 
     }
 
     const fetchDevice = async (cropId: string | undefined) => {
 
-        try {
+      try {
 
-            const res = await fetch(`/api/crops/${cropId}/devices`);
-            const data = await res.json() as Device;
-            setDevice(data);
+        const res = await fetch(`/api/crops/${cropId}/devices`);
+        const data = await res.json() as Device;
+        setDevice(data);
 
-            if (data.id) {
-                fetchDeviceMeasurements(data.id)
-            }
-
-        } catch (err) {
-            setError('Failed to load device details');
-        } finally {
-            setLoading(false);
+        if (data.id) {
+          fetchDeviceMeasurements(data.id)
         }
+
+      } catch (err) {
+        setError('Failed to load device details');
+      } finally {
+        setLoading(false);
+      }
 
     }
 
@@ -81,37 +95,63 @@ export default function ParcelPage() {
   const parcelPolygon = extractFeaturePolygon(parcel);
 
   return (
-    <div>
-      <h1>{parcel.name?.value}</h1>
-      <p>Address: {parcel.address?.value || "Unknown"}</p>
-      {parcelPolygon && <ParcelMap geoJson={parcelPolygon} />}
-      { deviceMeasurements && deviceMeasurements.length > 0 && (
+    <div className='relative flex flex-col flex-grow'>
+      <div className='absolute top-4 right-4 z-[900]'>
+        <Card sx={{ minWidth: 275 }}>
+          <CardContent>
+            <Typography variant='h6'>
+              {parcel.name?.value}
+            </Typography>
+            <Typography variant="body1" component="div">
+              Address: {parcel.address?.value || "Unknown"}
+            </Typography>
+          </CardContent>
+          <CardActions>
+            <Box sx={{ minWidth: 120 }}>
+              <FormControl variant='filled' size='small' fullWidth>
+                <InputLabel id="grid-size-label">Grid Size:</InputLabel>
+                <Select
+                  labelId="grid-size-label"
+                  id="grid-size"
+                  value={gridSize}
+                  onChange={handleGridSizeChange}
+                >
+                  {gridSizeOptions.map(option => (
+                    <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
+          </CardActions>
+        </Card>
+      </div>
+      {parcelPolygon && <ParcelMap geoJson={parcelPolygon} gridSize={gridSize} />}
+      {/* { deviceMeasurements && deviceMeasurements.length > 0 && (
         <MeasurementLineChart
             data={prepareChartData(deviceMeasurements)}
             title='Device Measurements Over Time'
             yAxisLabel='Measurement Value' />
-      )}
+      )} */}
     </div>
   );
 }
 
-
 const prepareChartData = (measurements: DeviceMeasurement[]) => {
-    return measurements.map(measurement => ({
-        date: measurement.dateObserved,
-        value: measurement.numValue,
-    }));
+  return measurements.map(measurement => ({
+    date: measurement.dateObserved,
+    value: measurement.numValue,
+  }));
 }
 
 const extractFeaturePolygon = (parcel: AgriParcel) => {
 
-    const features = parcel.location?.value.features;
+  const features = parcel.location?.value.features;
 
-    const geoJson = features && features.find(feature => feature.geometry.type === 'Polygon') 
+  const geoJson = features && features.find(feature => feature.geometry.type === 'Polygon')
 
-    const retval = geoJson?.geometry;
+  const retval = geoJson?.geometry;
 
-    if (!retval) return null;
+  if (!retval) return null;
 
-    return retval as GeoJSON.Polygon;
+  return retval as GeoJSON.Polygon;
 }

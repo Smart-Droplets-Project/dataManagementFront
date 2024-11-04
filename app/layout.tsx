@@ -28,8 +28,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
-            <Navbar />
-            {children}
+            <div className="flex flex-col h-dvh">
+              <Navbar />
+              {children}
+            </div>
           </ThemeProvider>
         </AppRouterCacheProvider>
       </body>

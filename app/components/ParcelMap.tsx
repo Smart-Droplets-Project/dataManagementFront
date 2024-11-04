@@ -4,24 +4,17 @@
 import { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import styles from './ParcelMap.module.css';
 import { createGridOverPolygon } from '../utils/geojson';
 
 interface ParcelMapProps {
     geoJson: GeoJSON.Polygon;
+    gridSize: string;
 }
 
-const gridSizeOptions = [
-    { label: '25x25', value: 0.025 },
-    { label: '10x10', value: 0.01 },
-    { label: '5x5', value: 0.005 },
-];
 
-
-const ParcelMap: React.FC<ParcelMapProps> = ({ geoJson }) => {
+const ParcelMap: React.FC<ParcelMapProps> = ({ geoJson, gridSize }) => {
     const mapRef = useRef<HTMLDivElement>(null);
     const mapInstanceRef = useRef<L.Map | null>(null);
-    const [gridSize, setGridSize] = useState(0.025);
 
     useEffect(() => {
         if (mapRef.current && !mapInstanceRef.current) {
@@ -53,7 +46,7 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ geoJson }) => {
 
 
             // Create and add the grid
-            const grid = createGridOverPolygon(geoJson, gridSize);
+            const grid = createGridOverPolygon(geoJson, Number(gridSize));
             L.geoJSON(grid, {
                 style: {
                     color: '#000000',
@@ -73,25 +66,12 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ geoJson }) => {
                 mapInstanceRef.current = null;
             }
         };
-    }, [geoJson, gridSize]);
+    }, [geoJson, Number(gridSize)]);
 
-    const handleGridSizeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setGridSize(Number(event.target.value));
-    };
 
     return (
-        <div>
-            <div className={styles.controls}>
-                <label htmlFor="grid-size">Grid Size: </label>
-                <select id="grid-size" value={gridSize} onChange={handleGridSizeChange}>
-                    {gridSizeOptions.map(option => (
-                        <option key={option.value} value={option.value}>
-                            {option.label}
-                        </option>
-                    ))}
-                </select>
-            </div>
-            <div ref={mapRef} className={styles.map}></div>
+        <div className="w-full flex-grow">
+            <div ref={mapRef} className="w-full h-full"></div>
         </div>
     );;
 };

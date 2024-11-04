@@ -12,7 +12,7 @@ const pages = [
 
 const Navbar = () => {
     return (
-        <Box sx={{ flexGrow: 1 }}>
+        <Box>
             <AppBar position="static">
                 <Toolbar>
                     <Box sx={{ flexGrow: 1, display: { /*xs: 'none', */ md: 'flex' }, gap: "1.2em" }}>
