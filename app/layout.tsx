@@ -29,7 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
             <Navbar />
-            <main style={{ padding: '2rem' }}>{children}</main>
+            {children}
           </ThemeProvider>
         </AppRouterCacheProvider>
       </body>

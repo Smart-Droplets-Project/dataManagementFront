@@ -4,7 +4,7 @@ import Grid from '@mui/material/Grid2';
 
 const GridLayout = (props: LayoutProps) => {
     return (
-        <Grid container spacing={{ xs: 0, md: 3 }}>
+        <Grid container padding={4} spacing={{ xs: 0, md: 3 }}>
             <Grid size={{ xs: 0, md: 'grow' }}>
                 <div></div>
             </Grid>
