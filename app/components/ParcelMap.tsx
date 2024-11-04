@@ -35,25 +35,47 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ geoJson, gridSize }) => {
                 }
             });
 
-            // Add GeoJSON layer
-            const geoJsonLayer = L.geoJSON(geoJson, {
-                style: {
-                    color: '#ff7800',
-                    weight: 5,
-                    opacity: 0.65
-                }
-            }).addTo(mapInstanceRef.current);
-
-
             // Create and add the grid
             const grid = createGridOverPolygon(geoJson, Number(gridSize));
             L.geoJSON(grid, {
                 style: {
                     color: '#000000',
                     weight: 1,
-                    opacity: 0.25
+                    opacity: 0.25,
                 }
             }).addTo(mapInstanceRef.current);
+
+            // Add GeoJSON layer
+            const geoJsonLayer = L.geoJSON(geoJson, {
+                style: {
+                    color: '#ff7800',
+                    weight: 5,
+                    opacity: 0.65
+                },
+                onEachFeature: (feature, layer) => {
+                    layer.on({
+                        mouseover: (e) => {
+                            var layer = e.target;
+
+                            layer.setStyle({
+                                weight: 5,
+                                color: '#1962ad', // TODO: change this to fetch color from colors file
+                                dashArray: '',
+                                fillOpacity: 0.7
+                            });
+
+                            layer.bringToFront();
+                        },
+                        mouseout: (e) => {
+                            geoJsonLayer.resetStyle(e.target);
+                        },
+                        click: (e) => {
+                            console.log(e.target);
+                        }
+                    });
+                }
+            }).addTo(mapInstanceRef.current);
+
 
             // Fit the map to the GeoJSON bounds
             mapInstanceRef.current.fitBounds(geoJsonLayer.getBounds());
@@ -73,7 +95,7 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ geoJson, gridSize }) => {
         <div className="w-full flex-grow">
             <div ref={mapRef} className="w-full h-full"></div>
         </div>
-    );;
+    );
 };
 
 export default ParcelMap;
