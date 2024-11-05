@@ -1,27 +1,14 @@
-'use client'
 // app/components/ParcelList.tsx
 import { Fragment, useEffect, useState } from 'react';
-import Link from 'next/link';
-import styles from './ParcelList.module.css';
 import { AgriParcel } from '../shared/interfaces';
 import { Box, Button, Collapse, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import Grid from '@mui/material/Grid2';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
-// interface Parcel {
-//   id: string;
-//   name: string;
-//   location: string;
-// }
-
 function Row(props: { row: AgriParcel }) {
     const { row } = props;
     const [open, setOpen] = useState(false);
-
-    function LocationTable(props: { location: AgriParcel['location'] }) {
-
-    }
 
     return (
         <Fragment>
@@ -116,30 +103,9 @@ function Row(props: { row: AgriParcel }) {
 
 
 
-const ParcelList = () => {
-    const [parcels, setParcels] = useState<AgriParcel[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-        const fetchParcels = async () => {
-            try {
-                const res = await fetch('/api/parcels');
-                const data = await res.json();
-                setParcels(data);
-            } catch (err) {
-                setError('Failed to load parcels');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchParcels();
-    }, []);
-
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>{error}</p>;
-
+const ParcelList = (props: { parcels: AgriParcel[] }) => {
+    const { parcels } = props;
+    
     return (
         <TableContainer component={Paper}>
             <Table aria-label="collapsible table">
