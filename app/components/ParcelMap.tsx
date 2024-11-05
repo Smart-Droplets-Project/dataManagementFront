@@ -1,18 +1,19 @@
 // app/components/ParcelMap.tsx
-'use client'
-
 import { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { createGridOverPolygon } from '../utils/geojson';
 
 interface ParcelMapProps {
-    geoJson: GeoJSON.Polygon;
+    geoJsonList: GeoJSON.Feature[];
+    selectedParcelId: string;
     gridSize: string;
 }
 
 
-const ParcelMap: React.FC<ParcelMapProps> = ({ geoJson, gridSize }) => {
+const ParcelMap: React.FC<ParcelMapProps> = ({ geoJsonList, selectedParcelId, gridSize }) => {
+    console.log(geoJsonList);
+
     const mapRef = useRef<HTMLDivElement>(null);
     const mapInstanceRef = useRef<L.Map | null>(null);
 
@@ -36,17 +37,21 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ geoJson, gridSize }) => {
             });
 
             // Create and add the grid
-            const grid = createGridOverPolygon(geoJson, Number(gridSize));
-            L.geoJSON(grid, {
-                style: {
-                    color: '#000000',
-                    weight: 1,
-                    opacity: 0.25,
+            geoJsonList.forEach(geoJson => {
+                if (mapInstanceRef.current) {
+                    const grid = createGridOverPolygon(geoJson.geometry as GeoJSON.Polygon, Number(gridSize));
+                    L.geoJSON(grid, {
+                        style: {
+                            color: '#000000',
+                            weight: 1,
+                            opacity: 0.25,
+                        }
+                    }).addTo(mapInstanceRef.current);
                 }
-            }).addTo(mapInstanceRef.current);
+            });
 
             // Add GeoJSON layer
-            const geoJsonLayer = L.geoJSON(geoJson, {
+            const geoJsonLayer = L.geoJSON(geoJsonList, {
                 style: {
                     color: '#ff7800',
                     weight: 5,
@@ -71,6 +76,8 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ geoJson, gridSize }) => {
                         },
                         click: (e) => {
                             console.log(e.target);
+                            if (mapInstanceRef.current)
+                                mapInstanceRef.current.fitBounds(e.target.getBounds())
                         }
                     });
                 }
@@ -78,7 +85,22 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ geoJson, gridSize }) => {
 
 
             // Fit the map to the GeoJSON bounds
-            mapInstanceRef.current.fitBounds(geoJsonLayer.getBounds());
+            mapInstanceRef.current.fitBounds(geoJsonLayer.getBounds()); // TODO: This makes an animation from the complete bounds to the selected parcel bounds 
+
+            // Function to fit bounds to a specific polygon by id
+            const fitBoundsToId = (id: string) => {
+                const feature = geoJsonList.find(polygon => polygon?.properties?.id === id);
+                if (feature) {
+                    const bounds = L.geoJSON(feature).getBounds();
+                    if (mapInstanceRef.current)
+                        mapInstanceRef.current.fitBounds(bounds);
+                } else {
+                    console.error(`Polygon with ID ${id} not found.`);
+                }
+            };
+
+            fitBoundsToId(selectedParcelId);
+
         }
 
         // Cleanup function
@@ -88,7 +110,7 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ geoJson, gridSize }) => {
                 mapInstanceRef.current = null;
             }
         };
-    }, [geoJson, Number(gridSize)]);
+    }, [geoJsonList, Number(gridSize)]);
 
 
     return (

@@ -15,7 +15,9 @@ const gridSizeOptions = [
 
 export default function ParcelPage() {
   const { id } = useParams();
-  const [parcel, setParcel] = useState<AgriParcel | null>(null);
+
+  const [parcels, setParcels] = useState<AgriParcel[]>([]);
+  const [parcel, setParcel] = useState<AgriParcel | null | undefined>(null);
 
   const [gridSize, setGridSize] = useState('0.025');
 
@@ -23,74 +25,112 @@ export default function ParcelPage() {
     setGridSize(event.target.value as string);
   };
 
-  const [device, setDevice] = useState<Device | null>(null);
-  const [deviceMeasurements, setDeviceMeasurements] = useState<DeviceMeasurement[] | null>(null);
+  // const [device, setDevice] = useState<Device | null>(null);
+  // const [deviceMeasurements, setDeviceMeasurements] = useState<DeviceMeasurement[] | null>(null);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
 
-    const fetchDeviceMeasurements = async (deviceId: string | undefined) => {
+    // const fetchDeviceMeasurements = async (deviceId: string | undefined) => {
 
+    //   try {
+
+    //     const res = await fetch(`/api/devices/${deviceId}/measurements`);
+    //     const data = await res.json() as DeviceMeasurement[];
+
+    //     console.log("DeviceMeasurements are:", data);
+
+    //     setDeviceMeasurements(data);
+
+    //   } catch (err) {
+    //     setError('Failed to load device measurements');
+    //   } finally {
+    //     setLoading(false);
+    //   }
+
+    // }
+
+    // const fetchDevice = async (cropId: string | undefined) => {
+
+    //   try {
+
+    //     const res = await fetch(`/api/crops/${cropId}/devices`);
+    //     const data = await res.json() as Device;
+    //     setDevice(data);
+
+    //     if (data.id) {
+    //       fetchDeviceMeasurements(data.id)
+    //     }
+
+    //   } catch (err) {
+    //     setError('Failed to load device details');
+    //   } finally {
+    //     setLoading(false);
+    //   }
+
+    // }
+
+    // const fetchParcel = async () => {
+    //   try {
+    //     const res = await fetch(`/api/parcels/${id}`);
+    //     const data = await res.json() as AgriParcel;
+    //     console.log("Got:", data)
+    //     setParcel(data);
+
+    //     // fetchDevice(data.hasAgriCrop?.object)
+    //   } catch (err) {
+    //     setError('Failed to load parcel details');
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    // };
+
+    // fetchParcel();
+
+    const fetchParcels = async () => {
       try {
-
-        const res = await fetch(`/api/devices/${deviceId}/measurements`);
-        const data = await res.json() as DeviceMeasurement[];
-
-        console.log("DeviceMeasurements are:", data);
-
-        setDeviceMeasurements(data);
-
+        const res = await fetch('/api/parcels');
+        const data = await res.json();
+        setParcels(data);
       } catch (err) {
-        setError('Failed to load device measurements');
-      } finally {
-        setLoading(false);
-      }
-
-    }
-
-    const fetchDevice = async (cropId: string | undefined) => {
-
-      try {
-
-        const res = await fetch(`/api/crops/${cropId}/devices`);
-        const data = await res.json() as Device;
-        setDevice(data);
-
-        if (data.id) {
-          fetchDeviceMeasurements(data.id)
-        }
-
-      } catch (err) {
-        setError('Failed to load device details');
-      } finally {
-        setLoading(false);
-      }
-
-    }
-
-    const fetchParcel = async () => {
-      try {
-        const res = await fetch(`/api/parcels/${id}`);
-        const data = await res.json() as AgriParcel;
-        console.log("Got:", data)
-        setParcel(data);
-
-        fetchDevice(data.hasAgriCrop?.object)
-      } catch (err) {
-        setError('Failed to load parcel details');
+        setError('Failed to load parcels');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchParcel();
+    fetchParcels();
+
   }, [id]);
+
+
+  useEffect(() => {
+
+    if (parcels.length > 0 && id) {
+      const selectedParcel = parcels.find(p => {
+        const decodedId = Array.isArray(id) ? decodeURIComponent(id[0]) : decodeURIComponent(id);
+        return p.id === decodedId
+      });
+
+      setParcel(selectedParcel)
+      console.log(parcel);
+
+    }
+  }, [parcels, id]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
-  if (!parcel) return <p>Parcel not found</p>;
+  if (!parcel) return <p>Fetching parcel...</p>;
+
+  const parcelFeatureList:GeoJSON.Feature[] = [];
+
+  parcels.forEach(p => {
+    parcelFeatureList.push(extractFeaturePolygon(p))
+  });
+
+  console.log(parcelFeatureList);
 
   const parcelPolygon = extractFeaturePolygon(parcel);
 
@@ -125,7 +165,7 @@ export default function ParcelPage() {
           </CardActions>
         </Card>
       </div>
-      {parcelPolygon && <ParcelMap geoJson={parcelPolygon} gridSize={gridSize} />}
+      {parcelPolygon && <ParcelMap geoJsonList={parcelFeatureList} selectedParcelId={Array.isArray(id) ? decodeURIComponent(id[0]) : decodeURIComponent(id)} gridSize={gridSize} />}
       {/* { deviceMeasurements && deviceMeasurements.length > 0 && (
         <MeasurementLineChart
             data={prepareChartData(deviceMeasurements)}
@@ -136,12 +176,12 @@ export default function ParcelPage() {
   );
 }
 
-const prepareChartData = (measurements: DeviceMeasurement[]) => {
-  return measurements.map(measurement => ({
-    date: measurement.dateObserved,
-    value: measurement.numValue,
-  }));
-}
+// const prepareChartData = (measurements: DeviceMeasurement[]) => {
+//   return measurements.map(measurement => ({
+//     date: measurement.dateObserved,
+//     value: measurement.numValue,
+//   }));
+// }
 
 const extractFeaturePolygon = (parcel: AgriParcel) => {
 
@@ -149,9 +189,15 @@ const extractFeaturePolygon = (parcel: AgriParcel) => {
 
   const geoJson = features && features.find(feature => feature.geometry.type === 'Polygon')
 
-  const retval = geoJson?.geometry;
+  const retval = {
+    type: 'Feature',
+    properties: {
+      id: parcel.id
+    },
+    geometry: geoJson?.geometry
+  };
 
-  if (!retval) return null;
+  // if (!retval) return null;
 
-  return retval as GeoJSON.Polygon;
+  return retval as GeoJSON.Feature;
 }
