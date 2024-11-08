@@ -3,16 +3,18 @@ import { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { createGridOverPolygon } from '../utils/geojson';
+import { useParcelDrawer } from './ParcelDrawerComponents/ParcelDrawerContext';
 
 interface ParcelMapProps {
     geoJsonList: GeoJSON.Feature[];
+    setNewSelectedParcelId: (newId: string) => void;
     selectedParcelId: string;
     gridSize: string;
 }
 
 
-const ParcelMap: React.FC<ParcelMapProps> = ({ geoJsonList, selectedParcelId, gridSize }) => {
-    console.log(geoJsonList);
+const ParcelMap: React.FC<ParcelMapProps> = ({ geoJsonList, selectedParcelId, setNewSelectedParcelId, gridSize }) => {
+    const { openDrawer } = useParcelDrawer();
 
     const mapRef = useRef<HTMLDivElement>(null);
     const mapInstanceRef = useRef<L.Map | null>(null);
@@ -75,9 +77,11 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ geoJsonList, selectedParcelId, gr
                             geoJsonLayer.resetStyle(e.target);
                         },
                         click: (e) => {
-                            console.log(e.target);
-                            if (mapInstanceRef.current)
+                            if (mapInstanceRef.current) {
                                 mapInstanceRef.current.fitBounds(e.target.getBounds())
+                                setNewSelectedParcelId(e.target.feature.properties.id)
+                                openDrawer();
+                            }
                         }
                     });
                 }
@@ -111,6 +115,23 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ geoJsonList, selectedParcelId, gr
             }
         };
     }, [geoJsonList, Number(gridSize)]);
+
+    // useEffect(() => {
+    //     geoJsonList.forEach(geoJson => {
+    //             if (mapInstanceRef.current) {
+    //                 if (geoJson.properties?.id === selectedParcelId) {
+    //                     const grid = createGridOverPolygon(geoJson.geometry as GeoJSON.Polygon, Number(gridSize));
+    //                     L.geoJSON(grid, {
+    //                         style: {
+    //                             color: '#000000',
+    //                             weight: 1,
+    //                             opacity: 0.25,
+    //                         }
+    //                     }).addTo(mapInstanceRef.current);
+    //                 }
+    //             }
+    //         });
+    // }, [selectedParcelId])
 
 
     return (

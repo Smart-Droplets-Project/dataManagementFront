@@ -5,6 +5,8 @@ import { AgriParcel, Device, DeviceMeasurement } from '../../shared/interfaces';
 import ParcelMap from '../../components/ParcelMap';
 import { Card, CardContent, CardActions, Typography, Box, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent } from '@mui/material';
 import MeasurementLineChart from '../../components/MeasurementLineChart';
+import { ParcelDrawerProvider } from '@/app/components/ParcelDrawerComponents/ParcelDrawerContext';
+import ParcelDrawer from '@/app/components/ParcelDrawerComponents/ParcelDrawer';
 
 const gridSizeOptions = [
   { label: '25x25', value: 0.025 },
@@ -15,9 +17,12 @@ const gridSizeOptions = [
 
 export default function ParcelPage() {
   const { id } = useParams();
+  const decodedId = Array.isArray(id) ? decodeURIComponent(id[0]) : decodeURIComponent(id)
 
   const [parcels, setParcels] = useState<AgriParcel[]>([]);
   const [parcel, setParcel] = useState<AgriParcel | null | undefined>(null);
+
+  const [selectedParcelId, setSelectedParcelId] = useState<string>(decodedId);
 
   const [gridSize, setGridSize] = useState('0.025');
 
@@ -30,6 +35,10 @@ export default function ParcelPage() {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const [parcelFeatureList, setParcelFeatureList] = useState<GeoJSON.Feature[]>([]);
+
+  // let parcelFeatureList: GeoJSON.Feature[] = [];
 
   useEffect(() => {
 
@@ -89,11 +98,27 @@ export default function ParcelPage() {
 
     // fetchParcel();
 
+    // let parcelFeatureList: GeoJSON.Feature[] = [];
+
+
     const fetchParcels = async () => {
       try {
         const res = await fetch('/api/parcels');
         const data = await res.json();
         setParcels(data);
+
+        const selectedParcel = data.find((p: AgriParcel) => {
+          return p.id === selectedParcelId
+        });
+
+        setParcel(selectedParcel)
+
+        const featureList: GeoJSON.Feature[] = []
+        data.forEach((p: AgriParcel) => {
+          featureList.push(extractFeaturePolygon(p))
+        });
+        setParcelFeatureList(featureList)
+
       } catch (err) {
         setError('Failed to load parcels');
       } finally {
@@ -103,36 +128,20 @@ export default function ParcelPage() {
 
     fetchParcels();
 
-  }, [id]);
-
+  }, [decodedId]);
 
   useEffect(() => {
-
-    if (parcels.length > 0 && id) {
+    if (parcels.length > 0 && selectedParcelId) {
       const selectedParcel = parcels.find(p => {
-        const decodedId = Array.isArray(id) ? decodeURIComponent(id[0]) : decodeURIComponent(id);
-        return p.id === decodedId
+        return p.id === selectedParcelId
       });
-
       setParcel(selectedParcel)
-      console.log(parcel);
-
     }
-  }, [parcels, id]);
+  }, [selectedParcelId]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
-  if (!parcel) return <p>Fetching parcel...</p>;
-
-  const parcelFeatureList:GeoJSON.Feature[] = [];
-
-  parcels.forEach(p => {
-    parcelFeatureList.push(extractFeaturePolygon(p))
-  });
-
-  console.log(parcelFeatureList);
-
-  const parcelPolygon = extractFeaturePolygon(parcel);
+  if (!parcel) return <p>Parcel not found...</p>;
 
   return (
     <div className='relative flex flex-col flex-grow'>
@@ -165,7 +174,10 @@ export default function ParcelPage() {
           </CardActions>
         </Card>
       </div>
-      {parcelPolygon && <ParcelMap geoJsonList={parcelFeatureList} selectedParcelId={Array.isArray(id) ? decodeURIComponent(id[0]) : decodeURIComponent(id)} gridSize={gridSize} />}
+      <ParcelDrawerProvider>
+        {parcelFeatureList && <ParcelMap geoJsonList={parcelFeatureList} setNewSelectedParcelId={setSelectedParcelId} selectedParcelId={selectedParcelId} gridSize={gridSize} />}
+        <ParcelDrawer selectedParcelId={selectedParcelId}></ParcelDrawer>
+      </ParcelDrawerProvider>
       {/* { deviceMeasurements && deviceMeasurements.length > 0 && (
         <MeasurementLineChart
             data={prepareChartData(deviceMeasurements)}
