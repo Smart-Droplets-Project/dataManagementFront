@@ -1,21 +1,27 @@
 import { createContext, useContext, useState } from "react";
 
 interface ParcelDrawerContextProps {
-    isParcelDrawerOpen: boolean;
-    openDrawer: () => void;
+    selectedParcel: GeoJSON.Feature | null;
+    openDrawer: (feature: GeoJSON.Feature) => void;
     closeDrawer: () => void;
 }
 
 const ParcelDrawerContext = createContext<ParcelDrawerContextProps | undefined>(undefined);
 
 export const ParcelDrawerProvider = ({ children }: { children: React.ReactNode }) => {
-    const [isParcelDrawerOpen, setParcelDrawerOpen] = useState(false);
+    const [selectedParcel, setSelectedParcel] = useState<GeoJSON.Feature | null>(null);
 
-    const openDrawer = () => setParcelDrawerOpen(true);
-    const closeDrawer = () => setParcelDrawerOpen(false);
+    const openDrawer = (feature: GeoJSON.Feature) => {
+        setSelectedParcel(feature);
+    }
+
+    const closeDrawer = () => {
+        setSelectedParcel(null);
+    }
+
 
     return (
-        <ParcelDrawerContext.Provider value={{ isParcelDrawerOpen, openDrawer, closeDrawer }}>
+        <ParcelDrawerContext.Provider value={{ selectedParcel, openDrawer, closeDrawer }}>
             {children}
         </ParcelDrawerContext.Provider>
     );

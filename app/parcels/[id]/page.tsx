@@ -22,8 +22,6 @@ export default function ParcelPage() {
   const [parcels, setParcels] = useState<AgriParcel[]>([]);
   const [parcel, setParcel] = useState<AgriParcel | null | undefined>(null);
 
-  const [selectedParcelId, setSelectedParcelId] = useState<string>(decodedId);
-
   const [gridSize, setGridSize] = useState('0.025');
 
   const handleGridSizeChange = (event: SelectChangeEvent) => {
@@ -108,7 +106,7 @@ export default function ParcelPage() {
         setParcels(data);
 
         const selectedParcel = data.find((p: AgriParcel) => {
-          return p.id === selectedParcelId
+          return p.id === decodedId
         });
 
         setParcel(selectedParcel)
@@ -130,14 +128,14 @@ export default function ParcelPage() {
 
   }, [decodedId]);
 
-  useEffect(() => {
-    if (parcels.length > 0 && selectedParcelId) {
-      const selectedParcel = parcels.find(p => {
-        return p.id === selectedParcelId
-      });
-      setParcel(selectedParcel)
-    }
-  }, [selectedParcelId]);
+  // useEffect(() => {
+  //   if (parcels.length > 0 && decodedId) {
+  //     const selectedParcel = parcels.find(p => {
+  //       return p.id === decodedId
+  //     });
+  //     setParcel(selectedParcel)
+  //   }
+  // }, [decodedId]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
@@ -145,38 +143,9 @@ export default function ParcelPage() {
 
   return (
     <div className='relative flex flex-col flex-grow'>
-      <div className='absolute top-4 right-4 z-[900]'>
-        <Card sx={{ minWidth: 275 }}>
-          <CardContent>
-            <Typography variant='h6'>
-              {parcel.name?.value}
-            </Typography>
-            <Typography variant="body1" component="div">
-              Address: {parcel.address?.value || "Unknown"}
-            </Typography>
-          </CardContent>
-          <CardActions>
-            <Box sx={{ minWidth: 120 }}>
-              <FormControl variant='filled' size='small' fullWidth>
-                <InputLabel id="grid-size-label">Grid Size:</InputLabel>
-                <Select
-                  labelId="grid-size-label"
-                  id="grid-size"
-                  value={gridSize}
-                  onChange={handleGridSizeChange}
-                >
-                  {gridSizeOptions.map(option => (
-                    <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Box>
-          </CardActions>
-        </Card>
-      </div>
       <ParcelDrawerProvider>
-        {parcelFeatureList && <ParcelMap geoJsonList={parcelFeatureList} setNewSelectedParcelId={setSelectedParcelId} selectedParcelId={selectedParcelId} gridSize={gridSize} />}
-        <ParcelDrawer selectedParcelId={selectedParcelId}></ParcelDrawer>
+        {parcelFeatureList && <ParcelMap geoJsonList={parcelFeatureList} selectedParcelId={decodedId} gridSize={gridSize} />}
+        <ParcelDrawer></ParcelDrawer>
       </ParcelDrawerProvider>
       {/* { deviceMeasurements && deviceMeasurements.length > 0 && (
         <MeasurementLineChart
@@ -204,7 +173,9 @@ const extractFeaturePolygon = (parcel: AgriParcel) => {
   const retval = {
     type: 'Feature',
     properties: {
-      id: parcel.id
+      id: parcel.id,
+      name: parcel.name?.value || "This parcel has no name",
+      address: parcel.address?.value || "Unknown"
     },
     geometry: geoJson?.geometry
   };
