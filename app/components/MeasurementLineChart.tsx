@@ -78,7 +78,7 @@ const MeasurementLineChart: React.FC<MeasurementLineChartProps> = ({ data, title
         },
     };
 
-    return <Line options={options} data={chartData} />;
+    return <Line className='max-h-[500px]' options={options} data={chartData} />;
 };
 
 export default MeasurementLineChart;
