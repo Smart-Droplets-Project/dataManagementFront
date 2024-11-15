@@ -1,7 +1,7 @@
 'use client'
 // app/dashboard/page.tsx
 import ParcelList from "@/app/components/ParcelList";
-import { Typography } from "@mui/material";
+import { Skeleton, Typography } from "@mui/material";
 import GridLayout from "../components/GridLayout";
 import { useEffect, useState } from "react";
 import { AgriParcel } from "../shared/interfaces";
@@ -27,19 +27,21 @@ const DashboardPage = () => {
         fetchParcels();
     }, []);
 
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>{error}</p>;
-
-    return (
+    const content = (
         <GridLayout>
-            <div className="flex flex-col gap-4">
-                <Typography variant="h2" component="div">
-                    Parcel Dashboard
-                </Typography>
-                <ParcelList parcels={parcels}/>
-            </div>
+            {
+                error ? <p>{error}</p> :
+                    <div className="flex flex-col gap-4">
+                        <Typography variant="h2" component="div">
+                            {loading ? <Skeleton sx={{transform: "none"}} /> : 'Parcel Dashboard'}
+                        </Typography>
+                        {loading ? <Skeleton sx={{transform: "none"}} height={300} /> : <ParcelList parcels={parcels} />}
+                    </div>
+            }
         </GridLayout>
-    );
+    )
+
+    return content;
 };
 
 export default DashboardPage;

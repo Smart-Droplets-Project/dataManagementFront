@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { AgriParcel } from '../../shared/interfaces';
 import ParcelMap from '../../components/ParcelMap';
-import { SelectChangeEvent } from '@mui/material';
+import { SelectChangeEvent, Skeleton } from '@mui/material';
 import { ParcelDrawerProvider } from '@/app/components/ParcelDrawerComponents/ParcelDrawerContext';
 import ParcelDrawer from '@/app/components/ParcelDrawerComponents/ParcelDrawer';
 
@@ -79,18 +79,22 @@ export default function ParcelPage() {
 
   }, [decodedId]);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
-  if (!parcel) return <p>Parcel not found...</p>;
-
-  return (
-    <div className='relative flex flex-col flex-grow'>
-      <ParcelDrawerProvider>
-        {parcelFeatureList && <ParcelMap geoJsonList={parcelFeatureList} selectedParcelId={decodedId} gridSize={gridSize} />}
-        <ParcelDrawer></ParcelDrawer>
-      </ParcelDrawerProvider>
+  const content = (
+    <div className='flex flex-col flex-grow'>
+      {
+        error ? <p>{error}</p> :
+        // !parcel ? <p>Parcel not found...</p> : TODO: Cover this case
+          loading ? <div className='p-8 flex flex-col flex-grow'><Skeleton sx={{transform: "none"}} height={"100%"} /></div> :
+            <ParcelDrawerProvider>
+              {parcelFeatureList && <ParcelMap geoJsonList={parcelFeatureList} selectedParcelId={decodedId} gridSize={gridSize} />}
+              <ParcelDrawer></ParcelDrawer>
+            </ParcelDrawerProvider>
+      }
     </div>
-  );
+
+  )
+
+  return content;
 }
 
 const extractFeaturePolygon = (parcel: AgriParcel) => {
