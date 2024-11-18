@@ -20,8 +20,6 @@ export async function GET(request: Request, { params }: { params: { id: string }
         const urlQuery = new URLSearchParams(searchParams).toString();
         const url = new URL(`${ENDPOINTS.API_BASE_URL}?${urlQuery}`).toString();
 
-        console.log("Entire URL:", url);
-
         const response = await fetch(url, {
             headers: {
                 'Link': CONTEXTS.DEVICE,
@@ -34,9 +32,6 @@ export async function GET(request: Request, { params }: { params: { id: string }
         }
 
         const data: Device[] = await response.json();
-
-        console.log(data);
-
 
         if (data.length > 0) {
             return NextResponse.json(data[0]); 
