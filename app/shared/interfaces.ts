@@ -24,6 +24,10 @@ export interface AgriParcel {
     hasAgriCrop?: {
         type: string;
         object: string;
+    },
+    hasAgriSoil?: {
+        type: string;
+        object: string;
     }
     location?: {
         type: string;

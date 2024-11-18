@@ -21,7 +21,11 @@ class GeoJSONFeatureInfoControl extends L.Control {
 
     onAdd(): HTMLDivElement {
         this._content.className = 'geojson-feature-info p-4 bg-white shadow-lg rounded';
-        this._content.innerHTML = `<p class="text-gray-500">Click on a parcel to see details.</p>`;
+        this._content.innerHTML =
+            `
+            <p class="text-gray-500">Click on a parcel to see its details.</p>
+            <p class="text-gray-500">Double click on a parcel to show its grid.</p>
+            `;
         return this._content;
     }
 
@@ -44,6 +48,7 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ geoJsonList, selectedParcelId, gr
         if (mapRef.current && !mapInstanceRef.current) {
             // Initialize the map
             mapInstanceRef.current = L.map(mapRef.current).setView([0, 0], 2);
+            mapInstanceRef.current.doubleClickZoom.disable();
 
             // Add OpenStreetMap tile layer
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -61,7 +66,7 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ geoJsonList, selectedParcelId, gr
 
 
             const geoJSONFeatureControl = new GeoJSONFeatureInfoControl({ position: 'topright' });
-            if (mapInstanceRef.current) { 
+            if (mapInstanceRef.current) {
                 mapInstanceRef.current.addControl(geoJSONFeatureControl);
             }
 
@@ -78,6 +83,9 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ geoJsonList, selectedParcelId, gr
             //         }).addTo(mapInstanceRef.current);
             //     }
             // });
+
+            let clickTimeout: NodeJS.Timeout | null = null;
+            let activeGridLayer: L.Layer | null = null;
 
             // Add GeoJSON layer
             const geoJsonLayer = L.geoJSON(geoJsonList, {
@@ -105,10 +113,45 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ geoJsonList, selectedParcelId, gr
                         },
                         click: (e) => {
                             // console.log(e.target);
+                            if (clickTimeout) {
+                                clearTimeout(clickTimeout); // If a second click occurs, clear the timeout.
+                                clickTimeout = null; // Reset the timeout.
+                            } else {
+                                // Set a timeout to allow for a potential double-click
+                                clickTimeout = setTimeout(() => {
+                                    if (mapInstanceRef.current) {
+                                        if (activeGridLayer) {
+                                            mapInstanceRef.current.removeLayer(activeGridLayer);
+                                            activeGridLayer = null;
+                                        }
+                                        mapInstanceRef.current.fitBounds(e.target.getBounds())
+                                        openDrawer(e.target.feature as GeoJSON.Feature);
+                                        geoJSONFeatureControl.updateContent(e.target.feature)
+                                        clickTimeout = null; // Reset the timeout after execution
+                                    }
+                                }, 200);
+                            }
+                        },
+                        dblclick: (e) => {
+                            if (clickTimeout) {
+                                clearTimeout(clickTimeout); // Prevent single click from firing
+                                clickTimeout = null;
+                            }
                             if (mapInstanceRef.current) {
+                                if (activeGridLayer) {
+                                    mapInstanceRef.current.removeLayer(activeGridLayer);
+                                    activeGridLayer = null;
+                                }
                                 mapInstanceRef.current.fitBounds(e.target.getBounds())
-                                openDrawer(e.target.feature as GeoJSON.Feature);
-                                geoJSONFeatureControl.updateContent(e.target.feature)
+                                const grid = createGridOverPolygon(e.target.feature.geometry as GeoJSON.Polygon, Number(gridSize));
+                                activeGridLayer = L.geoJSON(grid, {
+                                    style: {
+                                        interactive: false,
+                                        color: '#000000',
+                                        weight: 1,
+                                        opacity: 0.25,
+                                    }
+                                }).addTo(mapInstanceRef.current);
                             }
                         }
                     });
