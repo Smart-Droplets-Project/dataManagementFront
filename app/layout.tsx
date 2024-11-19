@@ -5,18 +5,17 @@ import "./globals.css";
 import Navbar from "./components/Navbar";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "./theme/theme";
-import GridLayout from "./components/GridLayout";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+// const geistSans = localFont({
+//   src: "./fonts/GeistVF.woff",
+//   variable: "--font-geist-sans",
+//   weight: "100 900",
+// });
+// const geistMono = localFont({
+//   src: "./fonts/GeistMonoVF.woff",
+//   variable: "--font-geist-mono",
+//   weight: "100 900",
+// });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -29,10 +28,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
-            <Navbar />
-            <GridLayout>
-              <main style={{ padding: '2rem' }}>{children}</main>
-            </GridLayout>
+            <div className="flex flex-col h-dvh">
+              <Navbar />
+              {children}
+            </div>
           </ThemeProvider>
         </AppRouterCacheProvider>
       </body>

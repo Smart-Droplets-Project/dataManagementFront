@@ -1,32 +1,54 @@
 // app/components/ParcelMap.tsx
-'use client'
-
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import styles from './ParcelMap.module.css';
 import { createGridOverPolygon } from '../utils/geojson';
+import { useParcelDrawer } from './ParcelDrawerComponents/ParcelDrawerContext';
 
 interface ParcelMapProps {
-    geoJson: GeoJSON.Polygon;
+    geoJsonList: GeoJSON.Feature[];
+    selectedParcelId: string;
+    gridSize: string;
 }
 
-const gridSizeOptions = [
-    { label: '25x25', value: 0.025 },
-    { label: '10x10', value: 0.01 },
-    { label: '5x5', value: 0.005 },
-];
+class GeoJSONFeatureInfoControl extends L.Control {
+    private _content: HTMLDivElement;
+
+    constructor(options?: L.ControlOptions) {
+        super(options);
+        this._content = document.createElement('div'); // Initialize content container
+    }
+
+    onAdd(): HTMLDivElement {
+        this._content.className = 'geojson-feature-info p-4 bg-white shadow-lg rounded';
+        this._content.innerHTML =
+            `
+            <p class="text-gray-500">Click on a parcel to see its details.</p>
+            <p class="text-gray-500">Double click on a parcel to show its grid.</p>
+            `;
+        return this._content;
+    }
+
+    updateContent(feature: GeoJSON.Feature): void {
+        this._content.innerHTML = feature
+            ? `<h6 class="text-lg font-bold">${feature.properties?.name}</h6>
+           <pre class="text-sm">Address: ${feature.properties?.address}</pre>`
+            : `<p class="text-gray-500">Click on a feature to see details.</p>`;
+    }
+}
 
 
-const ParcelMap: React.FC<ParcelMapProps> = ({ geoJson }) => {
+const ParcelMap: React.FC<ParcelMapProps> = ({ geoJsonList, selectedParcelId, gridSize }) => {
+    const { openDrawer } = useParcelDrawer();
+
     const mapRef = useRef<HTMLDivElement>(null);
     const mapInstanceRef = useRef<L.Map | null>(null);
-    const [gridSize, setGridSize] = useState(0.025);
 
     useEffect(() => {
         if (mapRef.current && !mapInstanceRef.current) {
             // Initialize the map
             mapInstanceRef.current = L.map(mapRef.current).setView([0, 0], 2);
+            mapInstanceRef.current.doubleClickZoom.disable();
 
             // Add OpenStreetMap tile layer
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -42,28 +64,118 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ geoJson }) => {
                 }
             });
 
+
+            const geoJSONFeatureControl = new GeoJSONFeatureInfoControl({ position: 'topright' });
+            if (mapInstanceRef.current) {
+                mapInstanceRef.current.addControl(geoJSONFeatureControl);
+            }
+
+            // Create and add the grid
+            // geoJsonList.forEach(geoJson => {
+            //     if (mapInstanceRef.current) {
+            //         const grid = createGridOverPolygon(geoJson.geometry as GeoJSON.Polygon, Number(gridSize));
+            //         L.geoJSON(grid, {
+            //             style: {
+            //                 color: '#000000',
+            //                 weight: 1,
+            //                 opacity: 0.25,
+            //             }
+            //         }).addTo(mapInstanceRef.current);
+            //     }
+            // });
+
+            let clickTimeout: NodeJS.Timeout | null = null;
+            let activeGridLayer: L.Layer | null = null;
+
             // Add GeoJSON layer
-            const geoJsonLayer = L.geoJSON(geoJson, {
+            const geoJsonLayer = L.geoJSON(geoJsonList, {
                 style: {
                     color: '#ff7800',
                     weight: 5,
                     opacity: 0.65
+                },
+                onEachFeature: (feature, layer) => {
+                    layer.on({
+                        mouseover: (e) => {
+                            var layer = e.target;
+
+                            layer.setStyle({
+                                weight: 5,
+                                color: '#1962ad', // TODO: change this to fetch color from colors file
+                                dashArray: '',
+                                fillOpacity: 0.7
+                            });
+
+                            layer.bringToFront();
+                        },
+                        mouseout: (e) => {
+                            geoJsonLayer.resetStyle(e.target);
+                        },
+                        click: (e) => {
+                            // console.log(e.target);
+                            if (clickTimeout) {
+                                clearTimeout(clickTimeout); // If a second click occurs, clear the timeout.
+                                clickTimeout = null; // Reset the timeout.
+                            } else {
+                                // Set a timeout to allow for a potential double-click
+                                clickTimeout = setTimeout(() => {
+                                    if (mapInstanceRef.current) {
+                                        if (activeGridLayer) {
+                                            mapInstanceRef.current.removeLayer(activeGridLayer);
+                                            activeGridLayer = null;
+                                        }
+                                        mapInstanceRef.current.fitBounds(e.target.getBounds())
+                                        openDrawer(e.target.feature as GeoJSON.Feature);
+                                        geoJSONFeatureControl.updateContent(e.target.feature)
+                                        clickTimeout = null; // Reset the timeout after execution
+                                    }
+                                }, 200);
+                            }
+                        },
+                        dblclick: (e) => {
+                            if (clickTimeout) {
+                                clearTimeout(clickTimeout); // Prevent single click from firing
+                                clickTimeout = null;
+                            }
+                            if (mapInstanceRef.current) {
+                                if (activeGridLayer) {
+                                    mapInstanceRef.current.removeLayer(activeGridLayer);
+                                    activeGridLayer = null;
+                                }
+                                mapInstanceRef.current.fitBounds(e.target.getBounds())
+                                const grid = createGridOverPolygon(e.target.feature.geometry as GeoJSON.Polygon, Number(gridSize));
+                                activeGridLayer = L.geoJSON(grid, {
+                                    style: {
+                                        interactive: false,
+                                        color: '#000000',
+                                        weight: 1,
+                                        opacity: 0.25,
+                                    }
+                                }).addTo(mapInstanceRef.current);
+                            }
+                        }
+                    });
                 }
             }).addTo(mapInstanceRef.current);
 
-
-            // Create and add the grid
-            const grid = createGridOverPolygon(geoJson, gridSize);
-            L.geoJSON(grid, {
-                style: {
-                    color: '#000000',
-                    weight: 1,
-                    opacity: 0.25
-                }
-            }).addTo(mapInstanceRef.current);
 
             // Fit the map to the GeoJSON bounds
-            mapInstanceRef.current.fitBounds(geoJsonLayer.getBounds());
+            // mapInstanceRef.current.fitBounds(geoJsonLayer.getBounds()); // TODO: This makes an animation from the complete bounds to the selected parcel bounds 
+
+            // Function to fit bounds to a specific polygon by id
+            const fitBoundsToId = (id: string) => {
+                const feature = geoJsonList.find(polygon => polygon?.properties?.id === id);
+                if (feature) {
+                    const bounds = L.geoJSON(feature).getBounds();
+                    if (mapInstanceRef.current)
+                        mapInstanceRef.current.fitBounds(bounds);
+                } else {
+                    console.error(`Polygon with ID ${id} not found.`);
+                }
+            };
+
+            fitBoundsToId(selectedParcelId);
+
         }
 
         // Cleanup function
@@ -73,27 +185,31 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ geoJson }) => {
                 mapInstanceRef.current = null;
             }
         };
-    }, [geoJson, gridSize]);
+    }, [geoJsonList, Number(gridSize)]);
 
-    const handleGridSizeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setGridSize(Number(event.target.value));
-    };
+    // useEffect(() => {
+    //     geoJsonList.forEach(geoJson => {
+    //             if (mapInstanceRef.current) {
+    //                 if (geoJson.properties?.id === selectedParcelId) {
+    //                     const grid = createGridOverPolygon(geoJson.geometry as GeoJSON.Polygon, Number(gridSize));
+    //                     L.geoJSON(grid, {
+    //                         style: {
+    //                             color: '#000000',
+    //                             weight: 1,
+    //                             opacity: 0.25,
+    //                         }
+    //                     }).addTo(mapInstanceRef.current);
+    //                 }
+    //             }
+    //         });
+    // }, [selectedParcelId])
+
 
     return (
-        <div>
-            <div className={styles.controls}>
-                <label htmlFor="grid-size">Grid Size: </label>
-                <select id="grid-size" value={gridSize} onChange={handleGridSizeChange}>
-                    {gridSizeOptions.map(option => (
-                        <option key={option.value} value={option.value}>
-                            {option.label}
-                        </option>
-                    ))}
-                </select>
-            </div>
-            <div ref={mapRef} className={styles.map}></div>
+        <div className="w-full flex-grow">
+            <div ref={mapRef} className="w-full h-full"></div>
         </div>
-    );;
+    );
 };
 
 export default ParcelMap;

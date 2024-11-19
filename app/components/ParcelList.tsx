@@ -1,28 +1,10 @@
-'use client'
 // app/components/ParcelList.tsx
 import { Fragment, useEffect, useState } from 'react';
-import Link from 'next/link';
-import styles from './ParcelList.module.css';
 import { AgriParcel } from '../shared/interfaces';
 import { Box, Button, Collapse, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import Grid from '@mui/material/Grid2';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-
-// interface Parcel {
-//   id: string;
-//   name: string;
-//   location: string;
-// }
-
-const ParcelCard = ({ parcel }: { parcel: AgriParcel }) => (
-    <Link href={`/parcels/${parcel.id}`} className={styles.cardLink}>
-        <div className={styles.card}>
-            <h3 className={styles.cardTitle}>{parcel.name?.value || parcel.alternateName?.value}</h3>
-            <p className={styles.cardContent}>Address: {parcel.address?.value || "Unknown"}</p>
-        </div>
-    </Link>
-);
 
 function Row(props: { row: AgriParcel }) {
     const { row } = props;
@@ -49,7 +31,6 @@ function Row(props: { row: AgriParcel }) {
                     <Collapse in={open} timeout="auto" unmountOnExit>
                         <Grid container spacing={3}>
                             <Grid size={6}>
-
                                 <Box sx={{ margin: 1 }}>
                                     <Typography variant="h5" gutterBottom component="div">
                                         Description
@@ -57,47 +38,60 @@ function Row(props: { row: AgriParcel }) {
                                     <Typography variant="body1" gutterBottom component="div" sx={{ wordWrap: 'break-word' }}>
                                         {row.description?.value}
                                     </Typography>
-                                    <Typography variant="h5" gutterBottom component="div">
-                                        Location
-                                    </Typography>
-                                    <Typography variant="body1" gutterBottom component="div" sx={{ wordWrap: 'break-word' }}>
-                                        WIP
-                                    </Typography>
-                                    {/* <Table size="small">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Date</TableCell>
-                                        <TableCell>Customer</TableCell>
-                                        <TableCell align="right">Amount</TableCell>
-                                        <TableCell align="right">Total price ($)</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {row.history.map((historyRow) => (
-                                        <TableRow key={historyRow.date}>
-                                            <TableCell component="th" scope="row">
-                                                {historyRow.date}
-                                            </TableCell>
-                                            <TableCell>{historyRow.customerId}</TableCell>
-                                            <TableCell align="right">{historyRow.amount}</TableCell>
-                                            <TableCell align="right">
-                                                {Math.round(historyRow.amount * row.price * 100) / 100}
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table> */}
                                 </Box>
                             </Grid>
                             <Grid size={6}>
-                                <Typography variant="h5" gutterBottom component="div">
-                                    Actions
-                                </Typography>
-                                <Button variant='contained' href={`/parcels/${row.id}`} color='secondary'>
-                                    <Typography variant='body1'>
-                                        View Parcel
+                                <Box sx={{ margin: 1 }}>
+                                    <Typography variant="h5" gutterBottom component="div">
+                                        Actions
                                     </Typography>
-                                </Button>
+                                    <Button variant='contained' href={`/parcels/${row.id}`} color='secondary'>
+                                        <Typography variant='body1'>
+                                            View Parcel
+                                        </Typography>
+                                    </Button>
+                                </Box>
+                            </Grid>
+                            <Grid size={12}>
+                                <Box sx={{ margin: 1 }}>
+
+                                    <Typography variant="h5" gutterBottom component="div">
+                                        Location
+                                    </Typography>
+                                    <Table size="small">
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell>Type</TableCell>
+                                                <TableCell align='right'>Latitude</TableCell>
+                                                <TableCell align='right'>Longitude</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {row.location?.value.features.map((feature, featureIndex) => {
+                                                const { name } = feature.properties;
+                                                const { coordinates } = feature.geometry;
+
+                                                return !coordinates.length
+                                                    ? <Fragment key={featureIndex}></Fragment>
+                                                    : Array.isArray(coordinates[0])
+                                                        ?
+                                                        (coordinates[0] as number[][]).map((coordinate, coordIndex) => (
+                                                            <TableRow key={`${featureIndex}-${coordIndex}`}>
+                                                                <TableCell component="td" scope="row">{coordIndex == 0 && (name == "rows" ? "Parcel Rows" : "Parcel Borders")}</TableCell>
+                                                                <TableCell component="td" align='right'>{coordinate[0]}</TableCell>
+                                                                <TableCell component="td" align='right'>{coordinate[1]}</TableCell>
+                                                            </TableRow>
+                                                        ))
+                                                        :
+                                                        <TableRow key={featureIndex}>
+                                                            <TableCell component="td" scope="row">Center</TableCell>
+                                                            <TableCell align='right'>{coordinates[0]}</TableCell>
+                                                            <TableCell align='right'>{coordinates[1]}</TableCell>
+                                                        </TableRow>
+                                            })}
+                                        </TableBody>
+                                    </Table>
+                                </Box>
                             </Grid>
                         </Grid>
                     </Collapse>
@@ -109,30 +103,9 @@ function Row(props: { row: AgriParcel }) {
 
 
 
-const ParcelList = () => {
-    const [parcels, setParcels] = useState<AgriParcel[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-        const fetchParcels = async () => {
-            try {
-                const res = await fetch('/api/parcels');
-                const data = await res.json();
-                setParcels(data);
-            } catch (err) {
-                setError('Failed to load parcels');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchParcels();
-    }, []);
-
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>{error}</p>;
-
+const ParcelList = (props: { parcels: AgriParcel[] }) => {
+    const { parcels } = props;
+    
     return (
         <TableContainer component={Paper}>
             <Table aria-label="collapsible table">
