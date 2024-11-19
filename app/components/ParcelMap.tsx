@@ -56,7 +56,7 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ geoJsonList, selectedParcelId }) 
     //     setGridSize(event.target.value as string);
     // };
 
-    let gridSize = gridSizeOptions[0]
+    let gridSize = gridSizeOptions[0].value
 
     console.log(gridSize);
     
