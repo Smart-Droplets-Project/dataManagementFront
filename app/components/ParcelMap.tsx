@@ -1,15 +1,21 @@
 // app/components/ParcelMap.tsx
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { createGridOverPolygon } from '../utils/geojson';
 import { useParcelDrawer } from './ParcelDrawerComponents/ParcelDrawerContext';
+import { SelectChangeEvent } from '@mui/material';
 
 interface ParcelMapProps {
     geoJsonList: GeoJSON.Feature[];
     selectedParcelId: string;
-    gridSize: string;
 }
+
+const gridSizeOptions = [
+    { label: '25x25', value: 0.025 },
+    { label: '10x10', value: 0.01 },
+    { label: '5x5', value: 0.005 },
+];
 
 class GeoJSONFeatureInfoControl extends L.Control {
     private _content: HTMLDivElement;
@@ -38,13 +44,26 @@ class GeoJSONFeatureInfoControl extends L.Control {
 }
 
 
-const ParcelMap: React.FC<ParcelMapProps> = ({ geoJsonList, selectedParcelId, gridSize }) => {
+const ParcelMap: React.FC<ParcelMapProps> = ({ geoJsonList, selectedParcelId }) => {
     const { openDrawer } = useParcelDrawer();
 
     const mapRef = useRef<HTMLDivElement>(null);
     const mapInstanceRef = useRef<L.Map | null>(null);
 
+    // const [gridSize, setGridSize] = useState(gridSizeOptions[0]);
+
+    // const handleGridSizeChange = (event: SelectChangeEvent) => {
+    //     setGridSize(event.target.value as string);
+    // };
+
+    let gridSize = gridSizeOptions[0]
+
+    console.log(gridSize);
+    
+
     useEffect(() => {
+        console.log("useeffect");
+        
         if (mapRef.current && !mapInstanceRef.current) {
             // Initialize the map
             mapInstanceRef.current = L.map(mapRef.current).setView([0, 0], 2);
@@ -106,7 +125,7 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ geoJsonList, selectedParcelId, gr
                                 fillOpacity: 0.7
                             });
 
-                            layer.bringToFront();
+                            // layer.bringToFront();
                         },
                         mouseout: (e) => {
                             geoJsonLayer.resetStyle(e.target);
@@ -185,7 +204,7 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ geoJsonList, selectedParcelId, gr
                 mapInstanceRef.current = null;
             }
         };
-    }, [geoJsonList, Number(gridSize)]);
+    }, [geoJsonList]);
 
     // useEffect(() => {
     //     geoJsonList.forEach(geoJson => {
