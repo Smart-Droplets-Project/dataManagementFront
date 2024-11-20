@@ -58,11 +58,11 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ geoJsonList, selectedParcelId }) 
 
     let gridSize = gridSizeOptions[0].value
 
-    console.log(gridSize);
+    // console.log(gridSize);
     
 
     useEffect(() => {
-        console.log("useeffect");
+        // console.log("useeffect");
         
         if (mapRef.current && !mapInstanceRef.current) {
             // Initialize the map
