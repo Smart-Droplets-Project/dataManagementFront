@@ -43,7 +43,7 @@ const MeasurementLineChart: React.FC<MeasurementLineChartProps> = ({ data, title
                 data: data.map(item => item.value),
                 fill: false,
                 backgroundColor: 'rgb(255, 255, 255)',
-                borderColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: '#c5d42c', // TODO: fetch color from colors file
             },
         ],
     };

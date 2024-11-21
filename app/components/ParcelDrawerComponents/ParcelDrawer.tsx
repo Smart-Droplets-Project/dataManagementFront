@@ -1,8 +1,8 @@
-import { Box, Drawer, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Skeleton, Typography } from "@mui/material";
+import { Box, Drawer, FormControl, FormHelperText, InputLabel, MenuItem, Select, SelectChangeEvent, Skeleton, Typography } from "@mui/material";
 import Grid from '@mui/material/Grid2';
 import { useParcelDrawer } from "./ParcelDrawerContext";
 import { useEffect, useState } from "react";
-import { Device, DeviceMeasurement } from "@/app/shared/interfaces";
+import { Device, DeviceMeasurement, QuantumLeapTimeSeriesData } from "@/app/shared/interfaces";
 import MeasurementLineChart from "../MeasurementLineChart";
 
 const ParcelDrawer = () => {
@@ -15,23 +15,25 @@ const ParcelDrawer = () => {
   };
 
   const [deviceMeasurements, setDeviceMeasurements] = useState<DeviceMeasurement[] | null>(null);
-  const [selectedDeviceMeasurements, setSelectedDeviceMeasurements] = useState<string>('');
-  const handleSelectedDeviceMeasurementsChange = (event: SelectChangeEvent) => {
-    setSelectedDeviceMeasurements(event.target.value as string);
+  const [selectedDeviceMeasurement, setSelectedDeviceMeasurement] = useState<string>('');
+  const handleSelectedDeviceMeasurementChange = (event: SelectChangeEvent) => {
+    setSelectedDeviceMeasurement(event.target.value as string);
   };
 
-  // const [deviceMeasurements, setDeviceMeasurements] = useState<DeviceMeasurement[] | null>(null);
+  const [quantumLeapTimeSeriesData, setQuantumLeapTimeSeriesData] = useState<QuantumLeapTimeSeriesData | null>(null);
+
   const [loading, setLoading] = useState(true);
   const [loadingSelect, setLoadingSelect] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [errorSelect, setErrorSelect] = useState<string | null>(null);
 
-  // console.log(selectedParcel);
 
   // On drawer open
   useEffect(() => {
     console.log(selectedParcel);
     setSelectedDevice('')
-    setSelectedDeviceMeasurements('')
+    setSelectedDeviceMeasurement('')
+    setQuantumLeapTimeSeriesData(null)
     if (selectedParcel) {
       const fetchDevices = async (cropId: string | undefined) => {
         try {
@@ -42,7 +44,7 @@ const ParcelDrawer = () => {
           console.log(data);
 
         } catch (err) {
-          setError('Failed to load devices properties');
+          setError('Failed to load devices');
         } finally {
           setLoading(false)
         }
@@ -57,18 +59,19 @@ const ParcelDrawer = () => {
 
   // On first (device property) select change
   useEffect(() => {
-    setSelectedDeviceMeasurements('')
+    setSelectedDeviceMeasurement('')
+    setQuantumLeapTimeSeriesData(null)
     if (selectedDevice) {
       const fetchDeviceMeasurements = async (deviceId: string | undefined) => {
         try {
           const res = await fetch(`/api/devices/${deviceId}/measurements`);
-          const data = await res.json() as any;
+          const data = await res.json() as DeviceMeasurement[];
           setDeviceMeasurements(data);
 
           console.log(data);
 
         } catch (err) {
-          setError('Failed to load device measurements');
+          setErrorSelect('Failed to load device measurements');
         } finally {
           setLoadingSelect(false)
         }
@@ -80,6 +83,31 @@ const ParcelDrawer = () => {
     }
   }, [selectedDevice])
 
+  // On second (device measurement) select change
+  useEffect(() => {
+    setQuantumLeapTimeSeriesData(null)
+    if (selectedDeviceMeasurement) {
+      const fetchQuantumLeapTimeSeriesData = async (deviceMeasurementId: string | undefined) => {
+        try {
+          const res = await fetch(`/api/measurements/${deviceMeasurementId}`);
+          const data = await res.json() as QuantumLeapTimeSeriesData;
+          setQuantumLeapTimeSeriesData(data);
+
+          console.log(data);
+
+        } catch (err) {
+          setErrorSelect('Failed to load QuantumLeap time series data');
+        } finally {
+          setLoadingSelect(false)
+        }
+
+      }
+
+      setLoadingSelect(true)
+      fetchQuantumLeapTimeSeriesData(selectedDeviceMeasurement)
+    }
+  }, [selectedDeviceMeasurement])
+
 
   const DrawerList = (
     <Box sx={{ minHeight: "50vh", maxHeight: "75vh" }} role="presentation" >
@@ -89,47 +117,78 @@ const ParcelDrawer = () => {
             : <Grid container display={"flex"} flexDirection={{ xs: "column", md: "row" }} spacing={3}>
               {
                 error ? <p>{error}</p>
-                  // : !deviceMeasurements ? <p>No Measurements found</p> TODO: add proper case
-                  : <>
-                    <Grid size={12}>
-                      <Typography variant="h3" component="div">
-                        {selectedParcel?.properties?.name}
-                      </Typography>
-                      <Typography variant="subtitle1" component="div">
-                        Address: {selectedParcel?.properties?.address}
-                      </Typography>
-                    </Grid>
-                    <Grid display={"flex"} flexDirection={{ xs: "column", md: "row" }} size={{ xs: 12, md: 2 }}>
-                      <FormControl fullWidth>
-                        <InputLabel id="device-label">Property</InputLabel>
-                        <Select
-                          labelId="device-label"
-                          autoWidth
-                          value={selectedDevice}
-                          onChange={handleSelectedDeviceChange}
-                          label="Property"
-                          disabled={loadingSelect}
-                        >
-                          <MenuItem key="device-empty" value="">
-                            <em>Please select a property</em>
-                          </MenuItem>
-                          {
-                            devices?.map((device) => {
-                              return <MenuItem key={device.id} value={device.id}>{device.controlledProperty?.value}</MenuItem>
-                            })
-                          }
-                        </Select>
-                      </FormControl>
-                    </Grid>
-                    <Grid size={{ xs: 12, md: 10 }}>
-                      {deviceMeasurements && deviceMeasurements.length > 0 && (
-                        <MeasurementLineChart
-                          data={prepareChartData(deviceMeasurements)}
-                          title='Device Measurements Over Time'
-                          yAxisLabel='Measurement Value' />
-                      )}
-                    </Grid>
-                  </>
+                  : !devices ? <p>No Measurements found</p>
+                    : <>
+                      <Grid size={12}>
+                        <Typography variant="h3" component="div">
+                          {selectedParcel?.properties?.name}
+                        </Typography>
+                        <Typography variant="subtitle1" component="div">
+                          Address: {selectedParcel?.properties?.address}
+                        </Typography>
+                      </Grid>
+                      <Grid container display={"flex"} flexDirection={{ xs: "column", md: "row" }} size={12} spacing={3}>
+                        <Grid size={{ xs: 12, md: 4 }}>
+                          {/* Property */}
+                          <FormControl fullWidth>
+                            <InputLabel id="device-label">Property</InputLabel>
+                            <Select
+                              labelId="device-label"
+                              autoWidth
+                              value={selectedDevice}
+                              onChange={handleSelectedDeviceChange}
+                              label="Property"
+                              disabled={loadingSelect}
+                            >
+                              <MenuItem key="device-empty" value="">
+                                <em>Please select a property</em>
+                              </MenuItem>
+                              {
+                                devices?.map((device) => {
+                                  return <MenuItem key={device.id} value={device.id}>{device.controlledProperty?.value}</MenuItem>
+                                })
+                              }
+                            </Select>
+                          </FormControl>
+                        </Grid>
+                        <Grid size={{ xs: 12, md: 8 }}>
+                          {/* Device Measurement */}
+                          <FormControl fullWidth>
+                            <InputLabel id="device-label">Device Measurement</InputLabel>
+                            <Select
+                              labelId="device-label"
+                              autoWidth
+                              value={selectedDeviceMeasurement}
+                              onChange={handleSelectedDeviceMeasurementChange}
+                              label="Device Measurement"
+                              disabled={loadingSelect || !selectedDevice}
+                            >
+                              <MenuItem key="device-empty" value="">
+                                <em>Please select a device measurement</em>
+                              </MenuItem>
+                              {
+                                deviceMeasurements?.map((deviceMeasurement) => {
+                                  return <MenuItem key={deviceMeasurement.id} value={deviceMeasurement.id}>Date Observed: {formatDate(deviceMeasurement?.dateObserved?.value)}</MenuItem>
+                                })
+                              }
+                            </Select>
+                            {!selectedDevice && <FormHelperText>Please select a property first</FormHelperText>}
+                          </FormControl>
+                        </Grid>
+                      </Grid>
+                      <Grid size={12}>
+                        {
+                          errorSelect ? <p>{errorSelect}</p>
+                            : quantumLeapTimeSeriesData ? (
+                              <MeasurementLineChart
+                                data={prepareChartData(quantumLeapTimeSeriesData)}
+                                title='Device Measurements Over Time'
+                                yAxisLabel='Measurement Value' />
+                            ) :
+                              "Select a property and a measurement to display a chart"
+                        }
+                      </Grid>
+                    </>
               }
             </Grid>
         }
@@ -154,11 +213,29 @@ const ParcelDrawer = () => {
   );
 }
 
-const prepareChartData = (measurements: DeviceMeasurement[]) => {
-  return measurements.map(measurement => ({
-    date: measurement.dateObserved,
-    value: measurement.numValue,
+const prepareChartData = (measurement: QuantumLeapTimeSeriesData) => {
+  const dateObserved = measurement.attributes.find(attr => attr.attrName === "dateObserved");
+  const numValue = measurement.attributes.find(attr => attr.attrName === "numValue");
+
+  if (!dateObserved || !numValue) return [];
+
+  return dateObserved.values.map((date, i) => ({
+    date: String(date),
+    value: Number(numValue.values[i]),
   }));
-}
+};
+
+const formatDate = (isoDate: string): string => {
+  const date = new Date(isoDate);
+  return date.toLocaleString('en-GB', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  });
+};
 
 export default ParcelDrawer

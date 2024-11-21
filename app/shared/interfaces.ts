@@ -66,5 +66,20 @@ export interface DeviceMeasurement {
     type: string;
     numValue: number
     refDevice: string;
-    dateObserved: string;
+    dateObserved: {
+        type: string,
+        value: string
+    };
+}
+
+export interface QuantumLeapTimeSeriesData {
+    attributes: [
+        {
+            attrName: string,
+            values: string[] | number[],
+        }
+    ],
+    entityId: string,
+    entityType: string,
+    index: string[]
 }
