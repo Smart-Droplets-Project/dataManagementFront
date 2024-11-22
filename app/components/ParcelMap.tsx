@@ -1,10 +1,10 @@
 // app/components/ParcelMap.tsx
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { createGridOverPolygon } from '../utils/geojson';
 import { useParcelDrawer } from './ParcelDrawerComponents/ParcelDrawerContext';
-import { SelectChangeEvent } from '@mui/material';
+import { colors } from '../theme/colors';
 
 interface ParcelMapProps {
     geoJsonList: GeoJSON.Feature[];
@@ -59,11 +59,9 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ geoJsonList, selectedParcelId }) 
     let gridSize = gridSizeOptions[0].value
 
     // console.log(gridSize);
-    
 
     useEffect(() => {
         // console.log("useeffect");
-        
         if (mapRef.current && !mapInstanceRef.current) {
             // Initialize the map
             mapInstanceRef.current = L.map(mapRef.current).setView([0, 0], 2);
@@ -106,7 +104,7 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ geoJsonList, selectedParcelId }) 
 
                             layer.setStyle({
                                 weight: 5,
-                                color: '#1962ad', // TODO: change this to fetch color from colors file
+                                color: colors.primary.main,
                                 dashArray: '',
                                 fillOpacity: 0.7
                             });
@@ -161,7 +159,7 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ geoJsonList, selectedParcelId }) 
                     });
                 }
             }).addTo(mapInstanceRef.current);
-            
+
             // Function to fit bounds to a specific polygon by id
             const fitBoundsToId = (id: string) => {
                 const feature = geoJsonList.find(polygon => polygon?.properties?.id === id);
