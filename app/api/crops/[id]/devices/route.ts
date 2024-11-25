@@ -7,7 +7,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
     try {
         const searchParams: any = {
             type: 'Device',
-            limit: '1',
+            limit: '100',
         };
 
         const { id } = params;
