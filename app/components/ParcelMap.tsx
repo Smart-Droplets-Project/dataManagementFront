@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { createGridOverPolygon } from '../utils/geojson';
-import { useParcelDrawer } from './ParcelDrawerComponents/ParcelDrawerContext';
+import { useParcelDrawer } from './ParcelDrawer/ParcelDrawerContext';
 import { colors } from '../theme/colors';
 
 interface ParcelMapProps {

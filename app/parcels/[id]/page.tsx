@@ -4,8 +4,8 @@ import { useParams } from 'next/navigation';
 import { AgriParcel } from '../../shared/interfaces';
 import ParcelMap from '../../components/ParcelMap';
 import { SelectChangeEvent, Skeleton } from '@mui/material';
-import { ParcelDrawerProvider } from '@/app/components/ParcelDrawerComponents/ParcelDrawerContext';
-import ParcelDrawer from '@/app/components/ParcelDrawerComponents/ParcelDrawer';
+import { ParcelDrawerProvider } from '@/app/components/ParcelDrawer/ParcelDrawerContext';
+import ParcelDrawer from '@/app/components/ParcelDrawer/ParcelDrawer';
 
 
 export default function ParcelPage() {

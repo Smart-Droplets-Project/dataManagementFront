@@ -46,7 +46,9 @@ const ParcelDrawer = () => {
         } catch (err) {
           setError('Failed to load devices');
         } finally {
-          setLoading(false)
+          setTimeout(() => {
+            setLoading(false)
+          }, 15000);
         }
 
       }
@@ -113,84 +115,89 @@ const ParcelDrawer = () => {
     <Box sx={{ minHeight: "50vh", maxHeight: "75vh" }} role="presentation" >
       <Grid padding={4} display={"flex"} flexDirection={"column"} justifyContent={"center"}>
         {
-          loading ? <Skeleton height={"50vh"} variant="rectangular"></Skeleton>
-            : <Grid container display={"flex"} flexDirection={{ xs: "column", md: "row" }} spacing={3}>
-              {
-                error ? <p>{error}</p>
-                  : !devices ? <p>No Measurements found</p>
-                    : <>
-                      <Grid size={12}>
-                        <Typography variant="h3" component="div">
-                          {selectedParcel?.properties?.name}
-                        </Typography>
-                        <Typography variant="subtitle1" component="div">
-                          Address: {selectedParcel?.properties?.address}
-                        </Typography>
-                      </Grid>
-                      <Grid container display={"flex"} flexDirection={{ xs: "column", md: "row" }} size={12} spacing={3}>
-                        <Grid size={{ xs: 12, md: 4 }}>
-                          {/* Property */}
-                          <FormControl fullWidth>
-                            <InputLabel id="device-label">Property</InputLabel>
-                            <Select
-                              labelId="device-label"
-                              autoWidth
-                              value={selectedDevice}
-                              onChange={handleSelectedDeviceChange}
-                              label="Property"
-                              disabled={loadingSelect}
-                            >
-                              <MenuItem key="device-empty" value="">
-                                <em>Please select a property</em>
-                              </MenuItem>
-                              {
-                                devices?.map((device) => {
-                                  return <MenuItem key={device.id} value={device.id}>{device.controlledProperty?.value}</MenuItem>
-                                })
-                              }
-                            </Select>
-                          </FormControl>
+          <Grid container display={"flex"} flexDirection={{ xs: "column", md: "row" }} spacing={3}>
+            {
+              <>
+                <Grid size={12}>
+                  <Typography variant="h3" component="div">
+                    {selectedParcel?.properties?.name}
+                  </Typography>
+                  <Typography variant="subtitle1" component="div">
+                    Address: {selectedParcel?.properties?.address}
+                  </Typography>
+                </Grid>
+                {
+                  loading ? <Skeleton height={"30vh"} width={"100%"} variant="rectangular"></Skeleton> :
+                    error ? <p>{error}</p>
+                      : !devices ? <p>No Measurements found</p>
+                        :
+                        <Grid container display={"flex"} flexDirection={{ xs: "column", md: "row" }} size={12} spacing={3}>
+                          <Grid size={{ xs: 12, md: 4 }}>
+                            {/* Property */}
+                            <FormControl fullWidth>
+                              <InputLabel id="device-label">Property</InputLabel>
+                              <Select
+                                labelId="device-label"
+                                autoWidth
+                                value={selectedDevice}
+                                onChange={handleSelectedDeviceChange}
+                                label="Property"
+                                disabled={loadingSelect}
+                              >
+                                <MenuItem key="device-empty" value="">
+                                  <em>Please select a property</em>
+                                </MenuItem>
+                                {
+                                  devices?.map((device) => {
+                                    return <MenuItem key={device.id} value={device.id}>{device.controlledProperty?.value}</MenuItem>
+                                  })
+                                }
+                              </Select>
+                            </FormControl>
+                          </Grid>
+                          <Grid size={{ xs: 12, md: 8 }}>
+                            {/* Device Measurement */}
+                            <FormControl fullWidth>
+                              <InputLabel id="device-label">Device Measurement</InputLabel>
+                              <Select
+                                labelId="device-label"
+                                autoWidth
+                                value={selectedDeviceMeasurement}
+                                onChange={handleSelectedDeviceMeasurementChange}
+                                label="Device Measurement"
+                                disabled={loadingSelect || !selectedDevice}
+                              >
+                                <MenuItem key="device-empty" value="">
+                                  <em>Please select a device measurement</em>
+                                </MenuItem>
+                                {
+                                  deviceMeasurements?.map((deviceMeasurement) => {
+                                    return <MenuItem key={deviceMeasurement.id} value={deviceMeasurement.id}>Date Observed: {formatDate(deviceMeasurement?.dateObserved?.value)}</MenuItem>
+                                  })
+                                }
+                              </Select>
+                              {!selectedDevice && <FormHelperText>Please select a property first</FormHelperText>}
+                            </FormControl>
+                          </Grid>
                         </Grid>
-                        <Grid size={{ xs: 12, md: 8 }}>
-                          {/* Device Measurement */}
-                          <FormControl fullWidth>
-                            <InputLabel id="device-label">Device Measurement</InputLabel>
-                            <Select
-                              labelId="device-label"
-                              autoWidth
-                              value={selectedDeviceMeasurement}
-                              onChange={handleSelectedDeviceMeasurementChange}
-                              label="Device Measurement"
-                              disabled={loadingSelect || !selectedDevice}
-                            >
-                              <MenuItem key="device-empty" value="">
-                                <em>Please select a device measurement</em>
-                              </MenuItem>
-                              {
-                                deviceMeasurements?.map((deviceMeasurement) => {
-                                  return <MenuItem key={deviceMeasurement.id} value={deviceMeasurement.id}>Date Observed: {formatDate(deviceMeasurement?.dateObserved?.value)}</MenuItem>
-                                })
-                              }
-                            </Select>
-                            {!selectedDevice && <FormHelperText>Please select a property first</FormHelperText>}
-                          </FormControl>
-                        </Grid>
-                      </Grid>
-                      <Grid size={12}>
-                        {
-                          errorSelect ? <p>{errorSelect}</p>
-                            : quantumLeapTimeSeriesData ? (
-                              <MeasurementLineChart
-                                data={prepareChartData(quantumLeapTimeSeriesData)}
-                                title='Device Measurements Over Time'
-                                yAxisLabel='Measurement Value' />
-                            ) :
-                              "Select a property and a measurement to display a chart"
-                        }
-                      </Grid>
-                    </>
-              }
-            </Grid>
+                }
+                {
+                  !error && !loading && <Grid size={12}>
+                    {
+                      errorSelect ? <p>{errorSelect}</p>
+                        : quantumLeapTimeSeriesData ? (
+                          <MeasurementLineChart
+                            data={prepareChartData(quantumLeapTimeSeriesData)}
+                            title='Device Measurements Over Time'
+                            yAxisLabel='Measurement Value' />
+                        ) :
+                          "Select a property and a measurement to display a chart"
+                    }
+                  </Grid>
+                }
+              </>
+            }
+          </Grid>
         }
       </Grid>
     </Box>
