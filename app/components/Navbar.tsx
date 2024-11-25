@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import { NavButton } from './styled/NavButton';
 
 const pages = [
     { text: "Home", link: "/" },
@@ -12,33 +13,23 @@ const pages = [
 
 const Navbar = () => {
     return (
-        <Box>
-            <AppBar position="static">
+        <Box sx={{ zIndex: 1201 }}>
+            <AppBar color='transparent' position="static">
                 <Toolbar>
-                    <Box sx={{ flexGrow: 1, display: { /*xs: 'none', */ md: 'flex' }, gap: "1.2em" }}>
+                    <Box sx={{ flexGrow: 1, display: { md: 'flex' }, gap: "1.2em" }}>
                         {
                             pages.map((page) => {
-                                return <Button key={page.text} variant='contained' href={page.link}>
+                                return <NavButton key={page.text} variant='text' href={page.link}>
                                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                                         {page.text}
                                     </Typography>
-                                </Button>
+                                </NavButton>
                             })
                         }
                     </Box>
                 </Toolbar>
             </AppBar>
         </Box>
-        // <nav style={{ padding: '1rem', backgroundColor: '#333', color: '#fff' }}>
-        //     <ul style={{ display: 'flex', listStyle: 'none' }}>
-        //         <li style={{ marginRight: '1rem' }}>
-        //             <Link href="/" style={{ color: '#fff', textDecoration: 'none' }}>Home</Link>
-        //         </li>
-        //         <li style={{ marginRight: '1rem' }}>
-        //             <Link href="/dashboard" style={{ color: '#fff', textDecoration: 'none' }}>Dashboard</Link>
-        //         </li>
-        //     </ul>
-        // </nav>
     );
 };
 

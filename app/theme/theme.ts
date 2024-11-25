@@ -1,5 +1,6 @@
 'use client';
 import { createTheme, ThemeOptions } from '@mui/material/styles';
+import { colors } from './colors';
 
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
@@ -10,10 +11,10 @@ const themeOptions: ThemeOptions = {
   palette: {
     mode: 'light',
     primary: {
-      main: '#1962ad',
+      main: colors.primary.main,
     },
     secondary: {
-      main: '#c5d42c',
+      main: colors.secondary.main,
     },
   },
 };

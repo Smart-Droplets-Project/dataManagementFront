@@ -13,6 +13,8 @@ import {
     Legend,
 } from 'chart.js';
 
+import { colors } from '../theme/colors';
+
 ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -43,7 +45,7 @@ const MeasurementLineChart: React.FC<MeasurementLineChartProps> = ({ data, title
                 data: data.map(item => item.value),
                 fill: false,
                 backgroundColor: 'rgb(255, 255, 255)',
-                borderColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: colors.secondary.main,
             },
         ],
     };

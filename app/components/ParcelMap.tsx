@@ -4,12 +4,18 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { createGridOverPolygon } from '../utils/geojson';
 import { useParcelDrawer } from './ParcelDrawerComponents/ParcelDrawerContext';
+import { colors } from '../theme/colors';
 
 interface ParcelMapProps {
     geoJsonList: GeoJSON.Feature[];
     selectedParcelId: string;
-    gridSize: string;
 }
+
+const gridSizeOptions = [
+    { label: '25x25', value: 0.025 },
+    { label: '10x10', value: 0.01 },
+    { label: '5x5', value: 0.005 },
+];
 
 class GeoJSONFeatureInfoControl extends L.Control {
     private _content: HTMLDivElement;
@@ -38,13 +44,24 @@ class GeoJSONFeatureInfoControl extends L.Control {
 }
 
 
-const ParcelMap: React.FC<ParcelMapProps> = ({ geoJsonList, selectedParcelId, gridSize }) => {
+const ParcelMap: React.FC<ParcelMapProps> = ({ geoJsonList, selectedParcelId }) => {
     const { openDrawer } = useParcelDrawer();
 
     const mapRef = useRef<HTMLDivElement>(null);
     const mapInstanceRef = useRef<L.Map | null>(null);
 
+    // const [gridSize, setGridSize] = useState(gridSizeOptions[0]);
+
+    // const handleGridSizeChange = (event: SelectChangeEvent) => {
+    //     setGridSize(event.target.value as string);
+    // };
+
+    let gridSize = gridSizeOptions[0].value
+
+    // console.log(gridSize);
+
     useEffect(() => {
+        // console.log("useeffect");
         if (mapRef.current && !mapInstanceRef.current) {
             // Initialize the map
             mapInstanceRef.current = L.map(mapRef.current).setView([0, 0], 2);
@@ -70,20 +87,6 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ geoJsonList, selectedParcelId, gr
                 mapInstanceRef.current.addControl(geoJSONFeatureControl);
             }
 
-            // Create and add the grid
-            // geoJsonList.forEach(geoJson => {
-            //     if (mapInstanceRef.current) {
-            //         const grid = createGridOverPolygon(geoJson.geometry as GeoJSON.Polygon, Number(gridSize));
-            //         L.geoJSON(grid, {
-            //             style: {
-            //                 color: '#000000',
-            //                 weight: 1,
-            //                 opacity: 0.25,
-            //             }
-            //         }).addTo(mapInstanceRef.current);
-            //     }
-            // });
-
             let clickTimeout: NodeJS.Timeout | null = null;
             let activeGridLayer: L.Layer | null = null;
 
@@ -101,18 +104,16 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ geoJsonList, selectedParcelId, gr
 
                             layer.setStyle({
                                 weight: 5,
-                                color: '#1962ad', // TODO: change this to fetch color from colors file
+                                color: colors.primary.main,
                                 dashArray: '',
                                 fillOpacity: 0.7
                             });
-
-                            layer.bringToFront();
                         },
                         mouseout: (e) => {
                             geoJsonLayer.resetStyle(e.target);
                         },
                         click: (e) => {
-                            // console.log(e.target);
+                            // A single click opens up the parcel drawer which has its details
                             if (clickTimeout) {
                                 clearTimeout(clickTimeout); // If a second click occurs, clear the timeout.
                                 clickTimeout = null; // Reset the timeout.
@@ -133,6 +134,7 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ geoJsonList, selectedParcelId, gr
                             }
                         },
                         dblclick: (e) => {
+                            // A double click draws the target parcel's grid
                             if (clickTimeout) {
                                 clearTimeout(clickTimeout); // Prevent single click from firing
                                 clickTimeout = null;
@@ -158,10 +160,6 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ geoJsonList, selectedParcelId, gr
                 }
             }).addTo(mapInstanceRef.current);
 
-
-            // Fit the map to the GeoJSON bounds
-            // mapInstanceRef.current.fitBounds(geoJsonLayer.getBounds()); // TODO: This makes an animation from the complete bounds to the selected parcel bounds 
-
             // Function to fit bounds to a specific polygon by id
             const fitBoundsToId = (id: string) => {
                 const feature = geoJsonList.find(polygon => polygon?.properties?.id === id);
@@ -185,25 +183,7 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ geoJsonList, selectedParcelId, gr
                 mapInstanceRef.current = null;
             }
         };
-    }, [geoJsonList, Number(gridSize)]);
-
-    // useEffect(() => {
-    //     geoJsonList.forEach(geoJson => {
-    //             if (mapInstanceRef.current) {
-    //                 if (geoJson.properties?.id === selectedParcelId) {
-    //                     const grid = createGridOverPolygon(geoJson.geometry as GeoJSON.Polygon, Number(gridSize));
-    //                     L.geoJSON(grid, {
-    //                         style: {
-    //                             color: '#000000',
-    //                             weight: 1,
-    //                             opacity: 0.25,
-    //                         }
-    //                     }).addTo(mapInstanceRef.current);
-    //                 }
-    //             }
-    //         });
-    // }, [selectedParcelId])
-
+    }, [geoJsonList]);
 
     return (
         <div className="w-full flex-grow">
