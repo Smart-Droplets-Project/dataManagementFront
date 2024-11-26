@@ -83,3 +83,20 @@ export interface QuantumLeapTimeSeriesData {
     entityType: string,
     index: string[]
 }
+
+export interface AgriProductType {
+    id: string;
+    type: string;
+    name?: {
+        type: string;
+        value: string;
+    };
+    description?: {
+        type: string;
+        value: string;
+    };
+    alternateName?: {
+        type: string;
+        value: string;
+    };
+}

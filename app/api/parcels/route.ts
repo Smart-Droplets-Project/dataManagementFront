@@ -17,8 +17,6 @@ export async function GET() {
 
         const url = new URL(`${ENDPOINTS.API_BASE_URL}?${ulrQuery}`).toString();
 
-        console.log("Entire URL:", url)
-
         const response = await fetch(url, {
             headers: {
                 'Link': CONTEXTS.AGRIFARM
@@ -30,8 +28,6 @@ export async function GET() {
         }
 
         const data: AgriParcel[] = await response.json();
-
-        console.log(data)
 
         return NextResponse.json(data);
     } catch (error) {
