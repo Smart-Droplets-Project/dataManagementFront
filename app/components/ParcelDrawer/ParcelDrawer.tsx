@@ -3,6 +3,7 @@ import Grid from '@mui/material/Grid2';
 import { useParcelDrawer } from "./ParcelDrawerContext";
 import ParcelDrawerMeasurementsTab from "./ParcelDrawerMeasurementsTab";
 import { useState } from "react";
+import ParcelDrawerOperationsTab from "./ParcelDrawerOperationsTab";
 
 function TabPanel({ children, value, index }: { children: React.ReactNode; value: number; index: number }) {
   return (
@@ -49,7 +50,7 @@ const ParcelDrawer = () => {
                     <ParcelDrawerMeasurementsTab selectedParcel={selectedParcel}></ParcelDrawerMeasurementsTab>
                   </TabPanel>
                   <TabPanel value={tab} index={1}>
-                    Parcel operations WIP
+                    <ParcelDrawerOperationsTab selectedParcel={selectedParcel}></ParcelDrawerOperationsTab>
                   </TabPanel>
                 </Grid>
               </>

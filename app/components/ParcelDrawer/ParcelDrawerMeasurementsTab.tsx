@@ -114,7 +114,7 @@ const ParcelDrawerMeasurementsTab = (props: { selectedParcel: GeoJSON.Feature | 
                     error ? <p>{error}</p>
                         : !devices ? <p>No Measurements found</p>
                             :
-                            <Grid container display={"flex"} flexDirection={{ xs: "column", md: "row" }} size={12} spacing={3}>
+                            <Grid container display={"flex"} marginBottom={2} flexDirection={{ xs: "column", md: "row" }} size={12} spacing={3}>
                                 <Grid size={{ xs: 12, md: 4 }}>
                                     {/* Property */}
                                     <FormControl fullWidth>
@@ -141,16 +141,16 @@ const ParcelDrawerMeasurementsTab = (props: { selectedParcel: GeoJSON.Feature | 
                                 <Grid size={{ xs: 12, md: 8 }}>
                                     {/* Device Measurement */}
                                     <FormControl fullWidth>
-                                        <InputLabel id="device-label">Device Measurement</InputLabel>
+                                        <InputLabel id="device-measurement-label">Device Measurement</InputLabel>
                                         <Select
-                                            labelId="device-label"
+                                            labelId="device-measurement-label"
                                             autoWidth
                                             value={selectedDeviceMeasurement}
                                             onChange={handleSelectedDeviceMeasurementChange}
                                             label="Device Measurement"
                                             disabled={loadingSelect || !selectedDevice}
                                         >
-                                            <MenuItem key="device-empty" value="">
+                                            <MenuItem key="device-measurement-empty" value="">
                                                 <em>Please select a device measurement</em>
                                             </MenuItem>
                                             {
