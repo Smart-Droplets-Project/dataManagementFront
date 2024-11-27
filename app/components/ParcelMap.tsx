@@ -29,7 +29,7 @@ class GeoJSONFeatureInfoControl extends L.Control {
         this._content.className = 'geojson-feature-info p-4 bg-white shadow-lg rounded';
         this._content.innerHTML =
             `
-            <p class="text-gray-500">Click on a parcel to see its details.</p>
+            <p class="text-gray-500">Click on a parcel to see its details and access its operations.</p>
             <p class="text-gray-500">Double click on a parcel to show its grid.</p>
             `;
         return this._content;
