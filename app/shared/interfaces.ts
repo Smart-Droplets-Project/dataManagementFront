@@ -100,3 +100,21 @@ export interface AgriProductType {
         value: string;
     };
 }
+
+
+export interface CommandMessage {
+    id: string,
+    type: string,
+    command: {
+        type: "string",
+        value: "string"
+    },
+    commandTime: {
+        type: "string",
+        value: "string"
+    },
+    waypoints: {
+        type: "string",
+        value: "string"
+    }
+}
