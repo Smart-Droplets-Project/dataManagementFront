@@ -33,10 +33,6 @@ export async function GET(request: Request, { params }: { params: { id: string }
 
         const data: Device[] = await response.json();
 
-        if (data.length > 0) {
-            return NextResponse.json(data[0]); 
-        }
-
         return NextResponse.json(data);
     } catch (error) {
         console.error('Error fetching devices:', error);
