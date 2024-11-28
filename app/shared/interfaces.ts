@@ -115,6 +115,10 @@ export interface CommandMessage {
     },
     waypoints: {
         type: "string",
-        value: "string"
+        value: {
+            name: string,
+            type: string,
+            features: any[]
+        }
     }
 }
