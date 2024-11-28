@@ -4,6 +4,8 @@ import { Button, Card, CardContent, CircularProgress, FormControl, FormHelperTex
 import { useEffect, useState } from "react";
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import GenericSnackbar from "../../styled/GenericSnackbar";
+import dayjs, { Dayjs } from "dayjs";
+import { DatePicker } from "@mui/x-date-pickers";
 
 const parcelOperationTypesHardcoded = [
     "fertilizer"
@@ -28,6 +30,9 @@ const OperationAdditionSection = (props: { agriProducts: AgriProductType[], sele
         const inputValue = event.target.value === '' ? '' : Number(event.target.value);
         setQuantity(inputValue);
     };
+
+    const [date, setDate] = useState<Dayjs | null>(dayjs('2024-3-10'));
+
 
     const [loadingSelect, setLoadingSelect] = useState(false);
     const [loadingSubmit, setLoadingSubmit] = useState(false);
@@ -109,7 +114,7 @@ const OperationAdditionSection = (props: { agriProducts: AgriProductType[], sele
     return (
         <>
             <Card variant="outlined">
-                <CardContent sx={{display:"flex", flexDirection: "column", gap:"4"}}>
+                <CardContent sx={{ display: "flex", flexDirection: "column", gap: "4" }}>
                     <Typography marginBottom={3} variant="h5" component="div">
                         Operation Addition
                     </Typography>
@@ -177,7 +182,17 @@ const OperationAdditionSection = (props: { agriProducts: AgriProductType[], sele
                                 <FormHelperText>In kilograms</FormHelperText>
                             </FormControl>
                         </Grid>
-                        <Grid size={{ xs: 12, md: 3, lg: 12 }}>
+                        <Grid size={{ xs: 12, md: 3, lg: 4 }}>
+                            {/* Date */}
+                            <FormControl fullWidth>
+                                <DatePicker
+                                    label="Date"
+                                    value={date}
+                                    onChange={(newValue) => setDate(newValue)}
+                                />
+                            </FormControl>
+                        </Grid>
+                        <Grid size={{ xs: 12, md: 3, lg: 4 }}>
                             <Button
                                 disabled={loadingSelect || !selectedAgriProduct || !selectedOperationType || !quantity}
                                 startIcon={loadingSubmit ? <CircularProgress size={20} sx={{ color: 'black' }} /> : <ArrowUpwardIcon />}

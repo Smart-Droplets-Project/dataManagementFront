@@ -6,6 +6,8 @@ import Navbar from "./components/Navbar";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "./theme/theme";
 
+import ClientLocalizationProvider from "./lib/ClientLocalizationProvider";
+
 // const geistSans = localFont({
 //   src: "./fonts/GeistVF.woff",
 //   variable: "--font-geist-sans",
@@ -27,12 +29,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <AppRouterCacheProvider>
-          <ThemeProvider theme={theme}>
-            <div className="flex flex-col h-dvh">
-              <Navbar />
-              {children}
-            </div>
-          </ThemeProvider>
+          <ClientLocalizationProvider>
+            <ThemeProvider theme={theme}>
+              <div className="flex flex-col h-dvh">
+                <Navbar />
+                {children}
+              </div>
+            </ThemeProvider>
+          </ClientLocalizationProvider>
         </AppRouterCacheProvider>
       </body>
     </html>
