@@ -34,7 +34,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         npx semantic-release
-        echo "version=${{ git describe --tags }}" >> $GITHUB_OUTPUT
+        echo "version=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
 
     - name: Build Docker Image
       run: |
