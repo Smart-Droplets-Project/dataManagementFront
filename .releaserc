@@ -1,5 +1,5 @@
 {
-    "branches": ["main", "release"],
+    "branches": ["release"],
     "plugins": [
       [
         "@semantic-release/changelog",
