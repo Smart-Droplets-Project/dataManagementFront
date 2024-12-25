@@ -19,6 +19,7 @@ const DashboardPage = () => {
                 setParcels(data);
             } catch (err) {
                 setError('Failed to load parcels');
+                console.log(err)
             } finally {
                 setLoading(false);
             }

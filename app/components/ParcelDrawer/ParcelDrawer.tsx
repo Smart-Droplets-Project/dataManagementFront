@@ -4,7 +4,6 @@ import { useParcelDrawer } from "./ParcelDrawerContext";
 import ParcelDrawerMeasurementsTab from "./ParcelDrawerMeasurementsTab";
 import { useState } from "react";
 import ParcelDrawerOperationsTab from "./ParcelDrawerOperationsTab/ParcelDrawerOperationsTab";
-import { colors } from "@/app/theme/colors";
 
 function TabPanel({ children, value, index }: { children: React.ReactNode; value: number; index: number }) {
   return (

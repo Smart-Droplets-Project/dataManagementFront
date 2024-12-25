@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { AgriParcel } from '../../shared/interfaces';
 import ParcelMap from '../../components/ParcelMap';
-import { SelectChangeEvent, Skeleton } from '@mui/material';
+import { Skeleton } from '@mui/material';
 import { ParcelDrawerProvider } from '@/app/components/ParcelDrawer/ParcelDrawerContext';
 import ParcelDrawer from '@/app/components/ParcelDrawer/ParcelDrawer';
 
@@ -31,6 +31,7 @@ export default function ParcelPage() {
 
       } catch (err) {
         setError('Failed to load parcels');
+        console.log(err)
       } finally {
         setLoading(false);
       }

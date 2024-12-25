@@ -39,7 +39,7 @@ const ParcelDrawerOperationsTab = (props: { selectedParcel: GeoJSON.Feature | nu
                     console.log(data2);
 
                 } catch (err) {
-                    console.log("error");
+                    console.log(err);
 
                     setError('Failed to load agri products');
                 } finally {

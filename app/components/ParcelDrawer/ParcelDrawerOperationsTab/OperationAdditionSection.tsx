@@ -37,8 +37,8 @@ const OperationAdditionSection = (props: { agriProducts: AgriProductType[], sele
     const [loadingSelect, setLoadingSelect] = useState(false);
     const [loadingSubmit, setLoadingSubmit] = useState(false);
 
-    const [error, setError] = useState<string | null>(null);
-    const [errorSelect, setErrorSelect] = useState<string | null>(null);
+    const [, setError] = useState<string | null>(null);
+    const [, setErrorSelect] = useState<string | null>(null);
 
     const [snackbarState, setSnackbarState] = useState({
         open: false,
@@ -65,6 +65,7 @@ const OperationAdditionSection = (props: { agriProducts: AgriProductType[], sele
 
                 } catch (err) {
                     setErrorSelect('Failed to load parcel operation types');
+                    console.log(err)
                 } finally {
                     setLoadingSelect(false)
                 }
@@ -104,7 +105,7 @@ const OperationAdditionSection = (props: { agriProducts: AgriProductType[], sele
 
         } catch (error) {
             setError("Error occurred during operation addition")
-            console.log("error");
+            console.log(error);
 
         } finally {
             setLoadingSubmit(false);
@@ -188,7 +189,7 @@ const OperationAdditionSection = (props: { agriProducts: AgriProductType[], sele
                                 <DatePicker
                                     label="Date"
                                     value={date}
-                                    onChange={(newValue) => setDate(newValue)}
+                                    onChange={(newValue: any) => setDate(newValue)}
                                 />
                             </FormControl>
                         </Grid>

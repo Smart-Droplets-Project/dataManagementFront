@@ -56,7 +56,7 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ geoJsonList, selectedParcelId }) 
     //     setGridSize(event.target.value as string);
     // };
 
-    let gridSize = gridSizeOptions[0].value
+    const gridSize = gridSizeOptions[0].value
 
     // console.log(gridSize);
 
@@ -100,7 +100,7 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ geoJsonList, selectedParcelId }) 
                 onEachFeature: (feature, layer) => {
                     layer.on({
                         mouseover: (e) => {
-                            var layer = e.target;
+                            const layer = e.target;
 
                             layer.setStyle({
                                 weight: 5,

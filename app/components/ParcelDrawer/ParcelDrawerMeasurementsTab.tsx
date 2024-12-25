@@ -55,6 +55,7 @@ const ParcelDrawerMeasurementsTab = (props: { selectedParcel: GeoJSON.Feature | 
 
                 } catch (err) {
                     setError('Failed to load devices');
+                    console.log(err)
                 } finally {
                     setLoading(false)
                 }
@@ -82,6 +83,7 @@ const ParcelDrawerMeasurementsTab = (props: { selectedParcel: GeoJSON.Feature | 
 
                 } catch (err) {
                     setErrorSelect('Failed to load device measurements');
+                    console.log(err)
                 } finally {
                     setLoadingSelect(false)
                 }
@@ -109,6 +111,7 @@ const ParcelDrawerMeasurementsTab = (props: { selectedParcel: GeoJSON.Feature | 
 
                 } catch (err) {
                     setErrorSelect('Failed to load QuantumLeap time series data');
+                    console.log(err)
                 } finally {
                     setLoadingSelect(false)
                 }
