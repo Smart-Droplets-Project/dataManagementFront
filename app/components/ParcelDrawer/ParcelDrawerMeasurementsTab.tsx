@@ -3,6 +3,7 @@ import Grid from '@mui/material/Grid2';
 import { FormControl, FormHelperText, InputLabel, MenuItem, Select, SelectChangeEvent, Skeleton } from "@mui/material";
 import { useEffect, useState } from "react";
 import MeasurementLineChart from "../MeasurementLineChart";
+import GenericSnackbar from "../styled/GenericSnackbar";
 
 const ParcelDrawerMeasurementsTab = (props: { selectedParcel: GeoJSON.Feature | null }) => {
     const { selectedParcel } = props
@@ -26,6 +27,16 @@ const ParcelDrawerMeasurementsTab = (props: { selectedParcel: GeoJSON.Feature | 
     const [error, setError] = useState<string | null>(null);
     const [errorSelect, setErrorSelect] = useState<string | null>(null);
 
+    const [snackbarState, setSnackbarState] = useState({
+        open: false,
+        type: 'info' as 'success' | 'error' | 'info',
+        message: '',
+    });
+
+    const handleOpenSnackbar = (type: 'success' | 'error' | 'info', message: string) => {
+        setSnackbarState({ open: true, type, message });
+    };
+
 
     // On drawer open
     useEffect(() => {
@@ -44,6 +55,7 @@ const ParcelDrawerMeasurementsTab = (props: { selectedParcel: GeoJSON.Feature | 
 
                 } catch (err) {
                     setError('Failed to load devices');
+                    console.log(err)
                 } finally {
                     setLoading(false)
                 }
@@ -71,6 +83,7 @@ const ParcelDrawerMeasurementsTab = (props: { selectedParcel: GeoJSON.Feature | 
 
                 } catch (err) {
                     setErrorSelect('Failed to load device measurements');
+                    console.log(err)
                 } finally {
                     setLoadingSelect(false)
                 }
@@ -89,13 +102,16 @@ const ParcelDrawerMeasurementsTab = (props: { selectedParcel: GeoJSON.Feature | 
             const fetchQuantumLeapTimeSeriesData = async (deviceMeasurementId: string | undefined) => {
                 try {
                     const res = await fetch(`/api/measurements/${deviceMeasurementId}`);
-                    const data = await res.json() as QuantumLeapTimeSeriesData;
-                    setQuantumLeapTimeSeriesData(data);
+                    const data = await res.json();
 
-                    console.log(data);
+                    if (res.ok)
+                        setQuantumLeapTimeSeriesData(data);
+                    else
+                        handleOpenSnackbar("error", data.error)
 
                 } catch (err) {
                     setErrorSelect('Failed to load QuantumLeap time series data');
+                    console.log(err)
                 } finally {
                     setLoadingSelect(false)
                 }
@@ -178,6 +194,12 @@ const ParcelDrawerMeasurementsTab = (props: { selectedParcel: GeoJSON.Feature | 
                     }
                 </Grid>
             }
+            <GenericSnackbar
+                type={snackbarState.type}
+                message={snackbarState.message}
+                open={snackbarState.open}
+                setSnackbarState={setSnackbarState}>
+            </GenericSnackbar>
         </>
     )
 }

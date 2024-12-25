@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
-import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "./components/Navbar";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "./theme/theme";
+
+import ClientLocalizationProvider from "./lib/ClientLocalizationProvider";
 
 // const geistSans = localFont({
 //   src: "./fonts/GeistVF.woff",
@@ -27,12 +28,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <AppRouterCacheProvider>
-          <ThemeProvider theme={theme}>
-            <div className="flex flex-col h-dvh">
-              <Navbar />
-              {children}
-            </div>
-          </ThemeProvider>
+          <ClientLocalizationProvider>
+            <ThemeProvider theme={theme}>
+              <div className="flex flex-col h-dvh">
+                <Navbar />
+                {children}
+              </div>
+            </ThemeProvider>
+          </ClientLocalizationProvider>
         </AppRouterCacheProvider>
       </body>
     </html>

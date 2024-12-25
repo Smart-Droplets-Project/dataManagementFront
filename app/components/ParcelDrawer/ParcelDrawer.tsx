@@ -3,7 +3,7 @@ import Grid from '@mui/material/Grid2';
 import { useParcelDrawer } from "./ParcelDrawerContext";
 import ParcelDrawerMeasurementsTab from "./ParcelDrawerMeasurementsTab";
 import { useState } from "react";
-import ParcelDrawerOperationsTab from "./ParcelDrawerOperationsTab";
+import ParcelDrawerOperationsTab from "./ParcelDrawerOperationsTab/ParcelDrawerOperationsTab";
 
 function TabPanel({ children, value, index }: { children: React.ReactNode; value: number; index: number }) {
   return (
@@ -68,7 +68,8 @@ const ParcelDrawer = () => {
           {
             "& .MuiDrawer-paper": {
               borderTopLeftRadius: "0.5rem",
-              borderTopRightRadius: "0.5rem"
+              borderTopRightRadius: "0.5rem",
+              // backgroundColor: colors.other.lightgrey
             }
           }
         }>

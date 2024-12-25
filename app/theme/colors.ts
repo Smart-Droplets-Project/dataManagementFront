@@ -5,4 +5,7 @@ export const colors = {
     secondary: {
       main: '#c5d42c',
     },
+    other: {
+      lightgrey: "#fafbfb",
+    },
   };

@@ -1,5 +1,5 @@
 // app/components/ParcelList.tsx
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useState } from 'react';
 import { AgriParcel } from '../shared/interfaces';
 import { Box, Button, Collapse, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
