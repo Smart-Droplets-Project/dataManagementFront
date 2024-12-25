@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/Smart-Droplets-Project/dataManagementFront/compare/v1.0.2...v1.0.3) (2024-12-25)
+
+
+### Bug Fixes
+
+* Added write packages permission ([59257e6](https://github.com/Smart-Droplets-Project/dataManagementFront/commit/59257e67c558c4471082bf1b0380c4c15f6646c3))
+
 ## [1.0.2](https://github.com/Smart-Droplets-Project/dataManagementFront/compare/v1.0.1...v1.0.2) (2024-12-25)
 
 
