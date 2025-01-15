@@ -5,6 +5,12 @@ on:
     branches:
       - release
 
+permissions:
+  pull-requests: write
+  contents: write
+  issues: write
+  packages: write
+
 jobs:
   release:
     name: Build and Release
@@ -17,19 +23,24 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '18'
+        node-version: '20'
         cache: 'npm'
 
     - name: Install Dependencies
       run: npm ci
 
     - name: Run Release
+      id: semantic-release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: npx semantic-release
+      run: |
+        npx semantic-release
+        echo "version=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
 
     - name: Build Docker Image
       run: |
+        LOWERCASE_REPO=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
+
         echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
         docker build -t ghcr.io/${{ github.repository }}/nextjs-app:${{ steps.semantic-release.outputs.version }} -t ghcr.io/${{ github.repository }}/nextjs-app:latest .
         docker push ghcr.io/${{ github.repository }}/nextjs-app:${{ steps.semantic-release.outputs.version }}
