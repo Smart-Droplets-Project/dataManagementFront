@@ -1,3 +1,16 @@
+# [1.1.0](https://github.com/Smart-Droplets-Project/dataManagementFront/compare/v1.0.3...v1.1.0) (2025-01-15)
+
+
+### Bug Fixes
+
+* **env:** Refactored input endpoints from environment ([ae4c1d8](https://github.com/Smart-Droplets-Project/dataManagementFront/commit/ae4c1d8c6a47346fad05d8e36cd79b00e00f1040))
+
+
+### Features
+
+* command messages ([#11](https://github.com/Smart-Droplets-Project/dataManagementFront/issues/11)) ([282f7ca](https://github.com/Smart-Droplets-Project/dataManagementFront/commit/282f7ca80d7055ddb0cca542f68c15afa1267eed))
+* **github actions:** Tagging the image with "latest" as well ([89fc00a](https://github.com/Smart-Droplets-Project/dataManagementFront/commit/89fc00a36474f6808edd0ecedcdd8f482abff225))
+
 ## [1.0.3](https://github.com/Smart-Droplets-Project/dataManagementFront/compare/v1.0.2...v1.0.3) (2024-12-25)
 
 
