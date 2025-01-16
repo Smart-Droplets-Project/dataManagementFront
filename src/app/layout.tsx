@@ -37,8 +37,8 @@ const NAVIGATION: Navigation = [
 ];
 
 const BRANDING: Branding = {
-  title: "Smart Droplets Dashboard",
-  logo: null
+  title: "",
+  logo: <img src='/images/Smart-droplets-logo.svg' alt="" />
 }
 
 export default function RootLayout({
