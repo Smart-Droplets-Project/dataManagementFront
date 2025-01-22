@@ -1,11 +1,13 @@
 
-const QUANTUMLEAP_URL = process.env.QUANTUMLEAP_URL || 'http://localhost:8668/v2';
+import { ENDPOINTS } from '@/lib/constants'
+
+const QUANTUMLEAP_URL = ENDPOINTS.QUANTUMLEAP_URL;
 
 export async function GET(
     request: Request,
     { params }: { params: { id: string } }
 ) {
-    const { id } = params; 
+    const { id } = params;
     const { searchParams } = new URL(request.url);
     const limit = searchParams.get('limit');
     const fromDate = searchParams.get('fromDate');
@@ -34,7 +36,7 @@ export async function GET(
     }
 
     try {
-        
+
         const response = await fetch(url.toString(), {
             headers: {
                 'Accept': 'application/json',
