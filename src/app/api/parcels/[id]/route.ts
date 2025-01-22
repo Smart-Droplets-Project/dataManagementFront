@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
-import { ENDPOINTS } from "../../../shared/constants";
-import { CONTEXTS } from "../../../shared/constants";
+import { ENDPOINTS, CONTEXTS } from "@/lib/constants";
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: Request, params: any) {
 
     const url = `${ENDPOINTS.API_BASE_URL}/${params.id}`;
 

@@ -11,6 +11,8 @@ import { Branding, Navigation } from "@toolpad/core";
 import HomeIcon from '@mui/icons-material/Home';
 import TableChartIcon from '@mui/icons-material/TableChart';
 import ClientLocalizationProvider from "@/utils/ClientLocalizationProvider";
+import Image from "next/image";
+import { Suspense } from "react";
 
 
 export const metadata: Metadata = {
@@ -51,9 +53,11 @@ export default function RootLayout({
       <body>
         <AppRouterCacheProvider options={{ enableCssLayer: true }}>
           <ClientLocalizationProvider>
-            <NextAppProvider navigation={NAVIGATION} theme={theme} branding={BRANDING}>
-              {children}
-            </NextAppProvider>
+            <Suspense>
+              <NextAppProvider navigation={NAVIGATION} theme={theme} branding={BRANDING}>
+                {children}
+              </NextAppProvider>
+            </Suspense>
           </ClientLocalizationProvider>
         </AppRouterCacheProvider>
       </body>

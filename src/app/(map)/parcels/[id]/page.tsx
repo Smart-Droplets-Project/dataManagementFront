@@ -10,11 +10,11 @@ async function fetchParcels(): Promise<AgriParcel[]> {
   return res.json();
 }
 
-export default async function ParcelPage({ params }: { params: { id: string } }) {
+// export default async function ParcelPage({ params }: { params: { id: string } }) {
+export default async function ParcelPage(params: any) {
   const { id } = await Promise.resolve(params);
   const decodedId = decodeURIComponent(id)
   const parcels = await fetchParcels();
-  debugger
 
   return (
     <Suspense fallback={<Loading />}>

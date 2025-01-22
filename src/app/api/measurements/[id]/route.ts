@@ -5,7 +5,7 @@ const QUANTUMLEAP_URL = ENDPOINTS.QUANTUMLEAP_URL;
 
 export async function GET(
     request: Request,
-    { params }: { params: { id: string } }
+    params: any
 ) {
     const { id } = params;
     const { searchParams } = new URL(request.url);
