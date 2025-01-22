@@ -1,3 +1,11 @@
+## [1.1.3](https://github.com/Smart-Droplets-Project/dataManagementFront/compare/v1.1.2...v1.1.3) (2025-01-22)
+
+
+### Bug Fixes
+
+* Fixed missing dependencies ([2401c92](https://github.com/Smart-Droplets-Project/dataManagementFront/commit/2401c925463f6659f05dd82bc970e88aad79fe8c))
+* package-lock now in sync ([b5c544f](https://github.com/Smart-Droplets-Project/dataManagementFront/commit/b5c544f77ec57a2ea657ed0063db8d424bca40a8))
+
 ## [1.1.2](https://github.com/Smart-Droplets-Project/dataManagementFront/compare/v1.1.1...v1.1.2) (2025-01-15)
 
 
