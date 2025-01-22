@@ -1,3 +1,18 @@
+## [1.1.2](https://github.com/Smart-Droplets-Project/dataManagementFront/compare/v1.1.1...v1.1.2) (2025-01-15)
+
+
+### Bug Fixes
+
+* Fixed ENDPOINT url building from env input ([4fa0e8e](https://github.com/Smart-Droplets-Project/dataManagementFront/commit/4fa0e8e0d41bfbdc58ec97532d1ba9b2b1e2280c))
+
+## [1.1.1](https://github.com/Smart-Droplets-Project/dataManagementFront/compare/v1.1.0...v1.1.1) (2025-01-15)
+
+
+### Bug Fixes
+
+* Fixed repo name, now in lowercase ([eb5ea40](https://github.com/Smart-Droplets-Project/dataManagementFront/commit/eb5ea40b5c15bfcab2470a0e32e793e4bac556c4))
+* Fixed syntax error ([5673abe](https://github.com/Smart-Droplets-Project/dataManagementFront/commit/5673abe7e1455a1b2405986e382701ed54eead4a))
+
 # [1.1.0](https://github.com/Smart-Droplets-Project/dataManagementFront/compare/v1.0.3...v1.1.0) (2025-01-15)
 
 
