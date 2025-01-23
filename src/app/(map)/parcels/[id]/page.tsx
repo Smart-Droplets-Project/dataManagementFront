@@ -10,10 +10,10 @@ async function fetchParcels(): Promise<AgriParcel[]> {
   return res.json();
 }
 
-// export default async function ParcelPage({ params }: { params: { id: string } }) {
-export default async function ParcelPage(params: any) {
-  const { id } = await Promise.resolve(params);
-  const decodedId = decodeURIComponent(id)
+export default async function ParcelPage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
+  const id = params.id;
+  const decodedId = decodeURIComponent(id);
   const parcels = await fetchParcels();
 
   return (

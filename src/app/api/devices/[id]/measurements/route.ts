@@ -2,13 +2,13 @@
 import { NextResponse } from 'next/server';
 import { ENDPOINTS, CONTEXTS } from '@/lib/constants';
 
-export async function GET(request: Request, params: any) {
+export async function GET(request: Request, props: { params: Promise<{ id: string }> }) {
     try {
-        
+
         const { searchParams: requestParams } = new URL(request.url);
-        
+
         const limit = requestParams.get('limit') || '100';
-        
+
         const limitNum = parseInt(limit);
         if (isNaN(limitNum) || limitNum <= 0) {
             return NextResponse.json(
@@ -22,8 +22,8 @@ export async function GET(request: Request, params: any) {
             limit: limit,
         };
 
-        const { id } = params;
-        const deviceId = id;
+        const params = await props.params;
+        const deviceId = params.id;
 
         if (deviceId) {
             searchParams['q'] = `refDevice=="${deviceId}"`;

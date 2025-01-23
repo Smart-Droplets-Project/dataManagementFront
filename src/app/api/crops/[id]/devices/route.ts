@@ -3,15 +3,15 @@ import { NextResponse } from 'next/server';
 import { ENDPOINTS, CONTEXTS } from '@/lib/constants';
 import { Device } from '@/lib/interfaces';
 
-export async function GET(request: Request, params: any) {
+export async function GET(request: Request, props: { params: Promise<{ id: string }> }) {
     try {
         const searchParams: any = {
             type: 'Device',
             limit: '100',
         };
 
-        const { id } = await Promise.resolve(params);
-        const cropId = id;
+        const params = await props.params;
+        const cropId = params.id;
 
         if (cropId) {
             searchParams['q'] = `controlledAsset=="${cropId}"`;
