@@ -265,7 +265,7 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ parcelList, selectedParcelId }) =
                 }
             };
         }
-    });
+    }, []);
 
     return (
         <div ref={mapRef} style={{ flex: 1, border: 0 }}></div>

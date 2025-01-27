@@ -5,9 +5,10 @@ const QUANTUMLEAP_URL = ENDPOINTS.QUANTUMLEAP_URL;
 
 export async function GET(
     request: Request,
-    params: any
+    props: { params: Promise<{ id: string }> }
 ) {
-    const { id } = params;
+    const params = await props.params;
+    const id = params.id;
     const { searchParams } = new URL(request.url);
     const limit = searchParams.get('limit');
     const fromDate = searchParams.get('fromDate');
