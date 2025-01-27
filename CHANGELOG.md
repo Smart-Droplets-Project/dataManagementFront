@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/Smart-Droplets-Project/dataManagementFront/compare/v2.0.0...v2.0.1) (2025-01-27)
+
+
+### Bug Fixes
+
+* loading data on server side components and routes ([#13](https://github.com/Smart-Droplets-Project/dataManagementFront/issues/13)) ([508a085](https://github.com/Smart-Droplets-Project/dataManagementFront/commit/508a0857773f8e3a9c18cd9ac9c16efc0c417533))
+
 # [2.0.0](https://github.com/Smart-Droplets-Project/dataManagementFront/compare/v1.1.2...v2.0.0) (2025-01-22)
 
 
