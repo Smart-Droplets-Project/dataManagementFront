@@ -54,6 +54,7 @@ const MeasurementLineChart: React.FC<MeasurementLineChartProps> = ({ data, title
 
     const options = {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
             legend: {
                 position: 'top' as const,
@@ -79,8 +80,8 @@ const MeasurementLineChart: React.FC<MeasurementLineChartProps> = ({ data, title
             },
         },
     };
-
-    return <Line className='max-h-[500px]' options={options} data={chartData} />;
+    // TODO: resize might be unnecessary, needs testing 
+    return <Line redraw={true} width={'100%'} options={options} data={chartData} />; 
 };
 
 export default MeasurementLineChart;

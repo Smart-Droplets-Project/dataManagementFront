@@ -1,6 +1,6 @@
 import { Device, DeviceMeasurement, QuantumLeapTimeSeriesData } from "@/lib/interfaces";
 import Grid from '@mui/material/Grid2';
-import { FormControl, FormHelperText, InputLabel, MenuItem, Select, SelectChangeEvent, Skeleton } from "@mui/material";
+import { Box, FormControl, FormHelperText, InputLabel, MenuItem, Select, SelectChangeEvent, Skeleton } from "@mui/material";
 import { useEffect, useState } from "react";
 import MeasurementLineChart from "../MeasurementLineChart";
 import GenericSnackbar from "@/components/GenericSnackbar";
@@ -185,10 +185,12 @@ const ParcelDrawerMeasurementsTab = (props: { selectedParcel: GeoJSON.Feature | 
                     {
                         errorSelect ? <p>{errorSelect}</p>
                             : quantumLeapTimeSeriesData ? (
-                                <MeasurementLineChart
-                                    data={prepareChartData(quantumLeapTimeSeriesData)}
-                                    title='Device Measurements Over Time'
-                                    yAxisLabel='Measurement Value' />
+                                <Box padding={3} maxHeight={500}>
+                                    <MeasurementLineChart
+                                        data={prepareChartData(quantumLeapTimeSeriesData)}
+                                        title='Device Measurements Over Time'
+                                        yAxisLabel='Measurement Value' />
+                                </Box>
                             ) :
                                 "Select a property and a measurement to display a chart"
                     }
