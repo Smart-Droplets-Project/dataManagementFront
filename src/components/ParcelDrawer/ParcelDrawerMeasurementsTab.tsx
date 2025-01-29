@@ -185,7 +185,7 @@ const ParcelDrawerMeasurementsTab = (props: { selectedParcel: GeoJSON.Feature | 
                     {
                         errorSelect ? <p>{errorSelect}</p>
                             : quantumLeapTimeSeriesData ? (
-                                <Box padding={3} maxHeight={500}>
+                                <Box padding={2} height={500}>
                                     <MeasurementLineChart
                                         data={prepareChartData(quantumLeapTimeSeriesData)}
                                         title='Device Measurements Over Time'
