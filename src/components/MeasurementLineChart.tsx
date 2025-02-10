@@ -38,7 +38,16 @@ interface MeasurementLineChartProps {
 
 const MeasurementLineChart: React.FC<MeasurementLineChartProps> = ({ data, title, yAxisLabel }) => {
     const chartData = {
-        labels: data.map(item => item.date),
+        labels: data.map(
+            item => new Date(item.date)
+                .toLocaleString("en-GB", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: false
+                }).replace(",", "")),
         datasets: [
             {
                 label: yAxisLabel,
@@ -54,6 +63,7 @@ const MeasurementLineChart: React.FC<MeasurementLineChartProps> = ({ data, title
 
     const options = {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
             legend: {
                 position: 'top' as const,
@@ -76,11 +86,16 @@ const MeasurementLineChart: React.FC<MeasurementLineChartProps> = ({ data, title
                     display: true,
                     text: 'Date',
                 },
+                ticks: {
+                    font: {
+                        size: 12
+                    }
+                }
             },
         },
     };
-
-    return <Line className='max-h-[500px]' options={options} data={chartData} />;
+    // TODO: resize might be unnecessary, needs testing 
+    return <Line redraw={true} width={'100%'} options={options} data={chartData} />;
 };
 
 export default MeasurementLineChart;
