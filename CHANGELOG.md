@@ -1,3 +1,11 @@
+## [2.0.2](https://github.com/Smart-Droplets-Project/dataManagementFront/compare/v2.0.1...v2.0.2) (2025-02-10)
+
+
+### Bug Fixes
+
+* added additional routes and toolbar actions ([#15](https://github.com/Smart-Droplets-Project/dataManagementFront/issues/15)) ([1f85a06](https://github.com/Smart-Droplets-Project/dataManagementFront/commit/1f85a06360382028d1011bb7f82676478c9c05b9))
+* measurement chart labels and size ([#14](https://github.com/Smart-Droplets-Project/dataManagementFront/issues/14)) ([c5b85c1](https://github.com/Smart-Droplets-Project/dataManagementFront/commit/c5b85c1ddbb7d480f96ad2d7e9a071fcf464383e))
+
 ## [2.0.1](https://github.com/Smart-Droplets-Project/dataManagementFront/compare/v2.0.0...v2.0.1) (2025-01-27)
 
 
