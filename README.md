@@ -24,7 +24,7 @@ This web application is built with Next.js and interfaces with FIWARE components
 ![Analytics View](docs/images/parcel-overview.png)
 *A list of all available parcels*
 
-![Simulation Interface](docs/images/map-interface.png)
+![Simulation Interface](docs/images/map-view.png)
 *Parcels map view*
 
 ## Getting Started
