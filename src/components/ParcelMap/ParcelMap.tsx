@@ -13,7 +13,7 @@ import { Paper, Typography } from '@mui/material';
 
 interface ParcelMapProps {
     parcelList: AgriParcel[];
-    selectedParcelId: string | null;
+    selectedParcelId?: string;
 }
 
 const gridSizeOptions = [
@@ -242,7 +242,7 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ parcelList, selectedParcelId }) =
                 }).addTo(mapInstanceRef.current);
 
                 // Function to fit bounds to a specific polygon by id
-                const fitBoundsToId = (id: string | null) => {
+                const fitBoundsToId = (id: string | undefined) => {
                     let feature = geoJsonList.find(polygon => polygon?.properties?.id === id);
                     if (!feature) {
                         feature = geoJsonList[0];

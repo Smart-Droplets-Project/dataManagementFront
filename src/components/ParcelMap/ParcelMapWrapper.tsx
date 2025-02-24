@@ -8,7 +8,7 @@ const ParcelMap = dynamic(() => import('@/components/ParcelMap/ParcelMap'), { ss
 
 interface ParcelMapProps {
     parcelList: AgriParcel[];
-    selectedParcelId: string | null;
+    selectedParcelId?: string;
 }
 
 const ParcelMapWrapper: React.FC<ParcelMapProps> = ({ parcelList, selectedParcelId }) => {
