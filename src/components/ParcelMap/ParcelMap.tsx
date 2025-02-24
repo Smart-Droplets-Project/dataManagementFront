@@ -8,12 +8,13 @@ import 'leaflet/dist/leaflet.css';
 import { createGridOverPolygon } from '@/utils/geojson';
 import { useParcelDrawer } from '@/contexts/ParcelDrawerContext';
 import { colors } from '../../theme/colors';
-import { AgriParcel } from '@/lib/interfaces';
+import { AgriParcel, StateMessage } from '@/lib/interfaces';
 import { Paper, Typography } from '@mui/material';
 
 interface ParcelMapProps {
     parcelList: AgriParcel[];
     selectedParcelId?: string;
+    tractorStateMessages?: StateMessage[];
 }
 
 const gridSizeOptions = [
@@ -121,7 +122,7 @@ const extractFeaturePolygon = (parcel: AgriParcel) => {
 }
 
 
-const ParcelMap: React.FC<ParcelMapProps> = ({ parcelList, selectedParcelId }) => {
+const ParcelMap: React.FC<ParcelMapProps> = ({ parcelList, selectedParcelId, tractorStateMessages }) => {
     const { openDrawer } = useParcelDrawer();
 
     const mapRef = useRef<HTMLDivElement>(null);
@@ -132,6 +133,9 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ parcelList, selectedParcelId }) =
     parcelList.forEach((p: AgriParcel) => {
         geoJsonList.push(extractFeaturePolygon(p))
     });
+
+    console.log(tractorStateMessages);
+    
 
     // const [gridSize, setGridSize] = useState(gridSizeOptions[0]);
 
