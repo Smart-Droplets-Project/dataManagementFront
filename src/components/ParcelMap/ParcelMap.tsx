@@ -13,7 +13,7 @@ import { Paper, Typography } from '@mui/material';
 
 interface ParcelMapProps {
     parcelList: AgriParcel[];
-    selectedParcelId: string;
+    selectedParcelId: string | null;
 }
 
 const gridSizeOptions = [
@@ -242,15 +242,14 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ parcelList, selectedParcelId }) =
                 }).addTo(mapInstanceRef.current);
 
                 // Function to fit bounds to a specific polygon by id
-                const fitBoundsToId = (id: string) => {
-                    const feature = geoJsonList.find(polygon => polygon?.properties?.id === id);
-                    if (feature) {
-                        const bounds = L.geoJSON(feature).getBounds();
-                        if (mapInstanceRef.current)
-                            mapInstanceRef.current.fitBounds(bounds);
-                    } else {
-                        console.error(`Polygon with ID ${id} not found.`);
+                const fitBoundsToId = (id: string | null) => {
+                    let feature = geoJsonList.find(polygon => polygon?.properties?.id === id);
+                    if (!feature) {
+                        feature = geoJsonList[0];
                     }
+                    const bounds = L.geoJSON(feature).getBounds();
+                    if (mapInstanceRef.current)
+                        mapInstanceRef.current.fitBounds(bounds);
                 };
 
                 fitBoundsToId(selectedParcelId);
