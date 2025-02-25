@@ -294,7 +294,7 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ parcelList, selectedParcelId, tra
             const newGroup = L.layerGroup();
 
             // Add circles (or markers) to the new group.
-            if (tractorStateMessages) {
+            if (tractorStateMessages && tractorStateMessages.length) {
                 tractorStateMessages.forEach((sm) => {
                     const { latitude, longitude } = sm.pose.geographicPoint;
                     const marker = L.marker([latitude, longitude], {
