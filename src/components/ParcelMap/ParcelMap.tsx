@@ -27,7 +27,7 @@ const gridSizeOptions = [
 ];
 
 const tractorIcon = L.divIcon({
-    className: "leaflet-tractor-icon", // Custom CSS class for styling
+    className: "leaflet-tractor-icon",
     html: ReactDOMServer.renderToStaticMarkup(
         <AgricultureTwoToneIcon style={{ fontSize: "24px" }} />
     ),
@@ -285,15 +285,11 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ parcelList, selectedParcelId, tra
         if (typeof window !== 'undefined') {
             if (!mapInstanceRef.current) return;
 
-            // If there's an existing LayerGroup, remove it entirely from the map.
             if (markerGroupRef.current) {
                 mapInstanceRef.current.removeLayer(markerGroupRef.current);
             }
-
-            // Create a new LayerGroup.
             const newGroup = L.layerGroup();
 
-            // Add circles (or markers) to the new group.
             if (tractorStateMessages && tractorStateMessages.length) {
                 tractorStateMessages.forEach((sm) => {
                     const { latitude, longitude } = sm.pose.geographicPoint;
@@ -319,7 +315,7 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ parcelList, selectedParcelId, tra
                     marker.addTo(newGroup);
                 });
             }
-            // Add the new group to the map and store it in the ref.
+
             newGroup.addTo(mapInstanceRef.current);
             markerGroupRef.current = newGroup;
         }
