@@ -30,7 +30,7 @@ const ParcelMapWrapper: React.FC<ParcelMapProps> = ({ parcelList, selectedParcel
 
     return (
         <ParcelDrawerProvider>
-            <ParcelMap parcelList={parcelList} selectedParcelId={selectedParcelId} tractorStateMessages={tractorStateMessages}/>
+            <ParcelMap parcelList={parcelList} selectedParcelId={selectedParcelId} tractorStateMessages={tractorStateMessages} />
             <ParcelDrawer></ParcelDrawer>
         </ParcelDrawerProvider>
     );

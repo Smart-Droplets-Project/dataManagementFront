@@ -130,7 +130,7 @@ export interface StateMessage {
     mode: string,
     errors: any[],
     pose: {
-        geographicalPoint: {
+        geographicPoint: {
             latitude: number,
             longitude: number,
             altitude: number
@@ -142,7 +142,7 @@ export interface StateMessage {
         }
     },
     destination: {
-        geographicalPoint: {
+        geographicPoint: {
             latitude: number,
             longitude: number,
             altitude: number
