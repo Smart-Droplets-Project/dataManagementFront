@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import Loading from './loading';
+import Loading from '../../loading';
 import ParcelMapWrapper from '@/components/ParcelMap/ParcelMapWrapper';
 import { fetchParcels } from '@/lib/fetch/fetchParcels';
 
