@@ -1,6 +1,7 @@
 'use client'
 import { createElement, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom/client';
+import ReactDOMServer from "react-dom/server";
 
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -8,12 +9,15 @@ import 'leaflet/dist/leaflet.css';
 import { createGridOverPolygon } from '@/utils/geojson';
 import { useParcelDrawer } from '@/contexts/ParcelDrawerContext';
 import { colors } from '../../theme/colors';
-import { AgriParcel } from '@/lib/interfaces';
+import { AgriParcel, StateMessage } from '@/lib/interfaces';
 import { Paper, Typography } from '@mui/material';
+
+import AgricultureTwoToneIcon from '@mui/icons-material/AgricultureTwoTone';
 
 interface ParcelMapProps {
     parcelList: AgriParcel[];
-    selectedParcelId: string;
+    selectedParcelId?: string;
+    tractorStateMessages?: StateMessage[];
 }
 
 const gridSizeOptions = [
@@ -21,6 +25,16 @@ const gridSizeOptions = [
     { label: '10x10', value: 0.01 },
     { label: '5x5', value: 0.005 },
 ];
+
+const tractorIcon = L.divIcon({
+    className: "leaflet-tractor-icon",
+    html: ReactDOMServer.renderToStaticMarkup(
+        <AgricultureTwoToneIcon style={{ fontSize: "24px" }} />
+    ),
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -32],
+});
 
 class GeoJSONFeatureInfoControl extends L.Control {
     private _content: HTMLDivElement;
@@ -121,11 +135,12 @@ const extractFeaturePolygon = (parcel: AgriParcel) => {
 }
 
 
-const ParcelMap: React.FC<ParcelMapProps> = ({ parcelList, selectedParcelId }) => {
+const ParcelMap: React.FC<ParcelMapProps> = ({ parcelList, selectedParcelId, tractorStateMessages }) => {
     const { openDrawer } = useParcelDrawer();
 
     const mapRef = useRef<HTMLDivElement>(null);
     const mapInstanceRef = useRef<L.Map | null>(null);
+    const markerGroupRef = useRef<L.LayerGroup | null>(null);
 
     const geoJsonList: GeoJSON.Feature[] = [];
 
@@ -242,15 +257,14 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ parcelList, selectedParcelId }) =
                 }).addTo(mapInstanceRef.current);
 
                 // Function to fit bounds to a specific polygon by id
-                const fitBoundsToId = (id: string) => {
-                    const feature = geoJsonList.find(polygon => polygon?.properties?.id === id);
-                    if (feature) {
-                        const bounds = L.geoJSON(feature).getBounds();
-                        if (mapInstanceRef.current)
-                            mapInstanceRef.current.fitBounds(bounds);
-                    } else {
-                        console.error(`Polygon with ID ${id} not found.`);
+                const fitBoundsToId = (id: string | undefined) => {
+                    let feature = geoJsonList.find(polygon => polygon?.properties?.id === id);
+                    if (!feature) {
+                        feature = geoJsonList[0];
                     }
+                    const bounds = L.geoJSON(feature).getBounds();
+                    if (mapInstanceRef.current)
+                        mapInstanceRef.current.fitBounds(bounds);
                 };
 
                 fitBoundsToId(selectedParcelId);
@@ -266,6 +280,46 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ parcelList, selectedParcelId }) =
             };
         }
     }, []);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            if (!mapInstanceRef.current) return;
+
+            if (markerGroupRef.current) {
+                mapInstanceRef.current.removeLayer(markerGroupRef.current);
+            }
+            const newGroup = L.layerGroup();
+
+            if (tractorStateMessages && tractorStateMessages.length) {
+                tractorStateMessages.forEach((sm) => {
+                    const { latitude, longitude } = sm.pose.geographicPoint;
+                    const marker = L.marker([latitude, longitude], {
+                        icon: tractorIcon
+                    }).bindPopup
+                        (
+                            ReactDOMServer.renderToStaticMarkup(
+                                <Typography variant="body1" style={{ fontSize: "16px", fontFamily: "Roboto, Helvetica, Arial, sans-serif", textAlign: "center" }}>
+                                    Marker ID: {sm.id}
+                                </Typography>
+                            ),
+                            {
+                                closeButton: false
+                            }
+                        )
+                    marker.on("mouseover", function () {
+                        marker.openPopup();
+                    });
+                    marker.on("mouseout", function () {
+                        marker.closePopup();
+                    });
+                    marker.addTo(newGroup);
+                });
+            }
+
+            newGroup.addTo(mapInstanceRef.current);
+            markerGroupRef.current = newGroup;
+        }
+    }, [tractorStateMessages])
 
     return (
         <div ref={mapRef} style={{ flex: 1, border: 0 }}></div>

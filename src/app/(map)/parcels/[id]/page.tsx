@@ -1,7 +1,5 @@
-import { ParcelDrawerProvider } from '@/contexts/ParcelDrawerContext';
-import ParcelDrawer from '@/components/ParcelDrawer/ParcelDrawer';
 import { Suspense } from 'react';
-import Loading from './loading';
+import Loading from '../../loading';
 import ParcelMapWrapper from '@/components/ParcelMap/ParcelMapWrapper';
 import { fetchParcels } from '@/lib/fetch/fetchParcels';
 
@@ -13,10 +11,7 @@ export default async function ParcelPage(props: { params: Promise<{ id: string }
 
   return (
     <Suspense fallback={<Loading />}>
-      <ParcelDrawerProvider>
-        <ParcelMapWrapper parcelList={parcels} selectedParcelId={decodedId} />
-        <ParcelDrawer></ParcelDrawer>
-      </ParcelDrawerProvider>
+      <ParcelMapWrapper parcelList={parcels} selectedParcelId={decodedId} />
     </Suspense>
   );
 }
