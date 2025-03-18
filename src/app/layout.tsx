@@ -56,7 +56,7 @@ const NAVIGATION: Navigation = [
     icon: <AgricultureIcon />,
   },
   {
-    segment: 'tractor-tracking',
+    segment: 'tractors',
     title: 'Tractor Tracking',
     icon: <MapIcon />,
   },
