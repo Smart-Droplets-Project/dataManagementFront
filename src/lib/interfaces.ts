@@ -122,3 +122,41 @@ export interface CommandMessage {
         }
     }
 }
+
+export interface StateMessage {
+    id: string,
+    type: string,
+    commandTime: string,
+    mode: string,
+    errors: any[],
+    pose: {
+        geographicPoint: {
+            latitude: number,
+            longitude: number,
+            altitude: number
+        },
+        orientation3D: {
+            roll: number,
+            pitch: number,
+            yaw: number
+        }
+    },
+    destination: {
+        geographicPoint: {
+            latitude: number,
+            longitude: number,
+            altitude: number
+        },
+        orientation3D: {
+            roll: number,
+            pitch: number,
+            yaw: number
+        }
+    },
+    accuracy: {
+        covariance: number[]
+    },
+    battery: {
+        remainingPercentage: number
+    }
+}
