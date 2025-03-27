@@ -2,7 +2,9 @@
 import GenericSnackbar from "@/components/GenericSnackbar";
 import { Box, Button, IconButton, InputAdornment, Link, TextField, Typography } from "@mui/material";
 import Grid from '@mui/material/Grid2';
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { ENDPOINTS } from "@/lib/constants";
+
 
 import LoginIcon from '@mui/icons-material/Login';
 import Visibility from '@mui/icons-material/Visibility';
@@ -24,6 +26,47 @@ const Login = () => {
 
     const handleMouseUpPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
+    };
+
+    const handleSubmit = async (_: React.MouseEvent<HTMLButtonElement>) => {
+        const fetchKeycloakToken = async () => {
+            try {
+                const response = await fetch(
+                    ENDPOINTS.KEYCLOAK_TOKEN_API_URL,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded",
+                        },
+                        body: new URLSearchParams({
+                            client_id: "web-dashboard-client",
+                            grant_type: "password",
+                            ...credentials
+                        }),
+                    }
+                );
+                const data = await response.json();
+
+                if (!response.ok) {
+                    handleOpenSnackbar("error", data.error_description)
+                }
+                return data;
+            } catch (err) {
+                console.log(err)
+            }
+        };
+
+        console.log(await fetchKeycloakToken());
+    };
+
+    const [snackbarState, setSnackbarState] = useState({
+        open: false,
+        type: 'info' as 'success' | 'error' | 'info',
+        message: '',
+    });
+
+    const handleOpenSnackbar = (type: 'success' | 'error' | 'info', message: string) => {
+        setSnackbarState({ open: true, type, message });
     };
 
 
@@ -73,7 +116,7 @@ const Login = () => {
                         startIcon={<LoginIcon />}
                         // loading={loading}
                         // loadingPosition="start"
-                        // onClick={handleSubmit}
+                        onClick={handleSubmit}
                         variant="contained">
                         Log in
                     </Button>
@@ -84,12 +127,12 @@ const Login = () => {
                     </Box>
                 </Grid>
             </Grid>
-            {/* <GenericSnackbar
+            <GenericSnackbar
                 type={snackbarState.type}
                 message={snackbarState.message}
                 open={snackbarState.open}
-                onClose={closeSnackbar}
-            /> */}
+                setSnackbarState={setSnackbarState}
+            />
         </>
     )
 }
