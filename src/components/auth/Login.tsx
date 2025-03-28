@@ -14,6 +14,8 @@ const Login = () => {
     const [credentials, setCredentials] = useState({ username: "", password: "" });
     const [showPassword, setShowPassword] = useState(false);
 
+    const [loading, setLoading] = useState(false);
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setCredentials((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     };
@@ -48,14 +50,17 @@ const Login = () => {
                 const data = await response.json();
 
                 if (!response.ok) {
-                    handleOpenSnackbar("error", data.error_description)
+                    handleOpenSnackbar("error", data.error_description);
                 }
                 return data;
             } catch (err) {
-                console.log(err)
+                console.log(err);
+            } finally {
+                setLoading(false);
             }
         };
 
+        setLoading(true)
         console.log(await fetchKeycloakToken());
     };
 
@@ -114,8 +119,8 @@ const Login = () => {
                     <Button
                         fullWidth
                         startIcon={<LoginIcon />}
-                        // loading={loading}
-                        // loadingPosition="start"
+                        loading={loading}
+                        loadingPosition="start"
                         onClick={handleSubmit}
                         variant="contained">
                         Log in
