@@ -101,8 +101,6 @@ const Login = () => {
                     <Button
                         fullWidth
                         startIcon={<LoginIcon />}
-                        // loading={loading}
-                        // loadingPosition="start"
                         onClick={handleSubmit}
                         variant="contained">
                         Log in
