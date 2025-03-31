@@ -3,16 +3,19 @@ import GenericSnackbar from "@/components/GenericSnackbar";
 import { Box, Button, IconButton, InputAdornment, Link, TextField, Typography } from "@mui/material";
 import Grid from '@mui/material/Grid2';
 import { useState } from "react";
-import { ENDPOINTS } from "@/lib/constants";
 
 
 import LoginIcon from '@mui/icons-material/Login';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const Login = () => {
     const [credentials, setCredentials] = useState({ username: "", password: "" });
     const [showPassword, setShowPassword] = useState(false);
+
+    const router = useRouter();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setCredentials((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -28,35 +31,19 @@ const Login = () => {
         event.preventDefault();
     };
 
-    const handleSubmit = async (_: React.MouseEvent<HTMLButtonElement>) => {
-        const fetchKeycloakToken = async () => {
-            try {
-                const response = await fetch(
-                    ENDPOINTS.KEYCLOAK_TOKEN_API_URL,
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/x-www-form-urlencoded",
-                        },
-                        body: new URLSearchParams({
-                            client_id: "web-dashboard-client",
-                            grant_type: "password",
-                            ...credentials
-                        }),
-                    }
-                );
-                const data = await response.json();
+    const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
 
-                if (!response.ok) {
-                    handleOpenSnackbar("error", data.error_description)
-                }
-                return data;
-            } catch (err) {
-                console.log(err)
-            }
-        };
+        const result = await signIn("credentials", {
+            ...credentials,
+            redirect: false,
+        });
 
-        console.log(await fetchKeycloakToken());
+        if (result?.error) {
+            handleOpenSnackbar("error", "Invalid username or password");
+        } else {
+            router.push("/");
+        }
     };
 
     const [snackbarState, setSnackbarState] = useState({

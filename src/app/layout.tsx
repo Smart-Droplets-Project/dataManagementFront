@@ -16,6 +16,7 @@ import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import MapIcon from '@mui/icons-material/Map';
 
 import ClientLocalizationProvider from "@/utils/ClientLocalizationProvider";
+import AuthProvider from "@/utils/AuthProvider";
 import { Suspense } from "react";
 
 
@@ -93,7 +94,9 @@ export default function RootLayout({
           <ClientLocalizationProvider>
             <Suspense>
               <NextAppProvider navigation={NAVIGATION} theme={theme} branding={BRANDING}>
-                {children}
+                <AuthProvider>
+                  {children}
+                </AuthProvider>
               </NextAppProvider>
             </Suspense>
           </ClientLocalizationProvider>
