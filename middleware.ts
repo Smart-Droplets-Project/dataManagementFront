@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
+import { AUTH } from "@/lib/constants";
 
 export async function middleware(req: NextRequest) {
   const requestHeaders = new Headers(req.headers);
@@ -10,7 +11,7 @@ export async function middleware(req: NextRequest) {
     requestHeaders.set("Cache-Control", "no-store, max-age=0");
 
     // Get the user token from the session
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+    const token = await getToken({ req, secret: AUTH.NEXTAUTH_SECRET });
 
     if (token?.accessToken) {
       requestHeaders.set("Authorization", `Bearer ${token.accessToken}`);
