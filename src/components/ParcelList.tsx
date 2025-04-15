@@ -2,10 +2,11 @@
 'use client'
 import { Fragment, useState } from 'react';
 import { AgriParcel } from '@/lib/interfaces';
-import { Box, Button, Collapse, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Alert, Box, Button, Collapse, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import Grid from '@mui/material/Grid2';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { validateGeoJsonFormat } from '@/utils/validateGeoJsonFormat';
 
 function Row(props: { row: AgriParcel }) {
     const { row } = props;
@@ -55,43 +56,50 @@ function Row(props: { row: AgriParcel }) {
                             </Grid>
                             <Grid size={12}>
                                 <Box sx={{ margin: 1 }}>
-
-                                    <Typography variant="h5" gutterBottom component="div">
-                                        Location
-                                    </Typography>
-                                    <Table size="small">
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell>Type</TableCell>
-                                                <TableCell align='right'>Latitude</TableCell>
-                                                <TableCell align='right'>Longitude</TableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {row.location?.value.features.map((feature, featureIndex) => {
-                                                const { name } = feature.properties;
-                                                const { coordinates } = feature.geometry;
-
-                                                return !coordinates.length
-                                                    ? <Fragment key={featureIndex}></Fragment>
-                                                    : Array.isArray(coordinates[0])
-                                                        ?
-                                                        (coordinates[0] as number[][]).map((coordinate, coordIndex) => (
-                                                            <TableRow key={`${featureIndex}-${coordIndex}`}>
-                                                                <TableCell component="td" scope="row">{coordIndex == 0 && (name == "rows" ? "Parcel Rows" : "Parcel Borders")}</TableCell>
-                                                                <TableCell component="td" align='right'>{coordinate[0]}</TableCell>
-                                                                <TableCell component="td" align='right'>{coordinate[1]}</TableCell>
-                                                            </TableRow>
-                                                        ))
-                                                        :
-                                                        <TableRow key={featureIndex}>
-                                                            <TableCell component="td" scope="row">Center</TableCell>
-                                                            <TableCell align='right'>{coordinates[0]}</TableCell>
-                                                            <TableCell align='right'>{coordinates[1]}</TableCell>
+                                    {
+                                        !validateGeoJsonFormat(row.location)
+                                            ? <Alert severity="error">
+                                                Parcel coordinates incorrectly formatted. The parcel will not be displayed on the map
+                                            </Alert>
+                                            : <Fragment>
+                                                <Typography variant="h5" gutterBottom component="div">
+                                                    Location
+                                                </Typography>
+                                                <Table size="small">
+                                                    <TableHead>
+                                                        <TableRow>
+                                                            <TableCell>Type</TableCell>
+                                                            <TableCell align='right'>Latitude</TableCell>
+                                                            <TableCell align='right'>Longitude</TableCell>
                                                         </TableRow>
-                                            })}
-                                        </TableBody>
-                                    </Table>
+                                                    </TableHead>
+                                                    <TableBody>
+                                                        {row.location?.value.features.map((feature, featureIndex) => {
+                                                            const { name } = feature.properties;
+                                                            const { coordinates } = feature.geometry;
+
+                                                            return !coordinates.length
+                                                                ? <Fragment key={featureIndex}></Fragment>
+                                                                : Array.isArray(coordinates[0])
+                                                                    ?
+                                                                    (coordinates[0] as number[][]).map((coordinate, coordIndex) => (
+                                                                        <TableRow key={`${featureIndex}-${coordIndex}`}>
+                                                                            <TableCell component="td" scope="row">{coordIndex == 0 && (name == "rows" ? "Parcel Rows" : "Parcel Borders")}</TableCell>
+                                                                            <TableCell component="td" align='right'>{coordinate[0]}</TableCell>
+                                                                            <TableCell component="td" align='right'>{coordinate[1]}</TableCell>
+                                                                        </TableRow>
+                                                                    ))
+                                                                    :
+                                                                    <TableRow key={featureIndex}>
+                                                                        <TableCell component="td" scope="row">Center</TableCell>
+                                                                        <TableCell align='right'>{coordinates[0]}</TableCell>
+                                                                        <TableCell align='right'>{coordinates[1]}</TableCell>
+                                                                    </TableRow>
+                                                        })}
+                                                    </TableBody>
+                                                </Table>
+                                            </Fragment>
+                                    }
                                 </Box>
                             </Grid>
                         </Grid>
@@ -103,6 +111,8 @@ function Row(props: { row: AgriParcel }) {
 }
 
 const ParcelList = ({ parcels }: { parcels: AgriParcel[] }) => {
+    console.log(parcels);
+
     return (
         <TableContainer component={Paper}>
             <Table aria-label="collapsible table">
