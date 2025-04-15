@@ -111,8 +111,6 @@ function Row(props: { row: AgriParcel }) {
 }
 
 const ParcelList = ({ parcels }: { parcels: AgriParcel[] }) => {
-    console.log(parcels);
-
     return (
         <TableContainer component={Paper}>
             <Table aria-label="collapsible table">
