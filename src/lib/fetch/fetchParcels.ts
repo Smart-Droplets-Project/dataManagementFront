@@ -2,13 +2,11 @@ import { ENDPOINTS, CONTEXTS } from "@/lib/constants";
 import { AgriParcel } from "@/lib/interfaces";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
 export async function fetchParcels(): Promise<AgriParcel[]> {
   const session = await getServerSession(authOptions);
-  if (!session) redirect("/login");
 
   const searchParams = {
     type: "AgriParcel",
@@ -21,6 +19,7 @@ export async function fetchParcels(): Promise<AgriParcel[]> {
   const response = await fetch(url, {
     headers: {
       Link: CONTEXTS.AGRIFARM,
+      Authorization: `Bearer ${session.user.accessToken}`
     },
     cache: "no-store",
   });
