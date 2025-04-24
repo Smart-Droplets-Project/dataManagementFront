@@ -20,6 +20,7 @@ export const authOptions = {
               grant_type: "password",
               username: credentials?.username!,
               password: credentials?.password!,
+              client_secret: AUTH.KEYCLOAK_CLIENT_SECRET
             }),
           });
 
