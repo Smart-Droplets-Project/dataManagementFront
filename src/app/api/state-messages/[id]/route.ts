@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
 import { ENDPOINTS, CONTEXTS } from "@/lib/constants";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export async function GET(request: Request, props: { params: Promise<{ id: string }> }) {
+    const session = await getServerSession(authOptions);
 
     const params = await props.params;
     const id = params.id;
@@ -12,7 +15,8 @@ export async function GET(request: Request, props: { params: Promise<{ id: strin
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'Link': CONTEXTS.AUTONOMOUSMOBILEROBOT
+            'Link': CONTEXTS.AUTONOMOUSMOBILEROBOT,
+            Authorization: `Bearer ${session.user.accessToken}`
         },
     });
 

@@ -1,5 +1,7 @@
 
 import { ENDPOINTS } from '@/lib/constants'
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 const QUANTUMLEAP_URL = ENDPOINTS.QUANTUMLEAP_URL;
 
@@ -7,6 +9,8 @@ export async function GET(
     request: Request,
     props: { params: Promise<{ id: string }> }
 ) {
+    const session = await getServerSession(authOptions);
+
     const params = await props.params;
     const id = params.id;
     const { searchParams } = new URL(request.url);
@@ -41,7 +45,8 @@ export async function GET(
         const response = await fetch(url.toString(), {
             headers: {
                 'Accept': 'application/json',
-                'Fiware-ServicePath': '/'
+                'Fiware-ServicePath': '/',
+                Authorization: `Bearer ${session.user.accessToken}`
             }
         });
 
