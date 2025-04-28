@@ -1,3 +1,17 @@
+# [2.1.0](https://github.com/Smart-Droplets-Project/dataManagementFront/compare/v2.0.2...v2.1.0) (2025-04-10)
+
+
+### Bug Fixes
+
+* added error fallback page for parcel map page ([#16](https://github.com/Smart-Droplets-Project/dataManagementFront/issues/16)) ([d84d9c3](https://github.com/Smart-Droplets-Project/dataManagementFront/commit/d84d9c370f515e3706e8a808043e4d9129b1c49d))
+
+
+### Features
+
+* Added license info ([334aa08](https://github.com/Smart-Droplets-Project/dataManagementFront/commit/334aa08eece7ff41a6e7ddaa78614ed08fb900d5))
+* Map view screenshot added to readme ([f42837e](https://github.com/Smart-Droplets-Project/dataManagementFront/commit/f42837ec7e48bca7168350bdfef260818f01b9c3))
+* Restructured readme ([8cbe1e8](https://github.com/Smart-Droplets-Project/dataManagementFront/commit/8cbe1e80bf0e5e0042ea2699510685fa541fc86e))
+
 ## [2.0.2](https://github.com/Smart-Droplets-Project/dataManagementFront/compare/v2.0.1...v2.0.2) (2025-02-10)
 
 
