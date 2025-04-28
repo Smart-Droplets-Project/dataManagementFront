@@ -6,8 +6,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import LogoutIcon from '@mui/icons-material/Logout';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
-// import { useSession } from "@contexts";
-// import { useNavigate } from "react-router-dom";
+import { signOut } from "next-auth/react";
 
 const ToolbarActions = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -20,15 +19,6 @@ const ToolbarActions = () => {
         },
         [isMenuOpen],
     );
-
-    // const { setSession } = useSession();
-    // const navigate = useNavigate();
-
-    const handleClick = async () => {
-        // setSession(null);
-        // navigate("/");
-        console.log("signed out");
-    }
 
     return (
         <>
@@ -59,7 +49,7 @@ const ToolbarActions = () => {
                             <ListItemText>Account</ListItemText>
                         </MenuItem>
                         <Divider />
-                        <MenuItem onClick={handleClick}>
+                        <MenuItem onClick={() => signOut({ callbackUrl: "/login" })}>
                             <ListItemIcon>
                                 <LogoutIcon fontSize="small" />
                             </ListItemIcon>

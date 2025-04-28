@@ -3,6 +3,8 @@
 import { NextResponse } from "next/server";
 import { CONTEXTS, ENDPOINTS } from "@/lib/constants";
 import { randomUUID } from "crypto";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 
 function stripAngleBracketsFromLink(link: string) {
@@ -15,13 +17,14 @@ function stripAngleBracketsFromLink(link: string) {
 export async function POST(
     request: Request,
 ) {
+    const session = await getServerSession(authOptions);
 
     const { searchParams } = new URL(request.url);
 
     const parcel_id = searchParams.get('parcel_id');
-    const operation_type = searchParams.get('operation_type');  
-    const agri_product = searchParams.get('agri_product');  
-    const quantity = searchParams.get('quantity'); 
+    const operation_type = searchParams.get('operation_type');
+    const agri_product = searchParams.get('agri_product');
+    const quantity = searchParams.get('quantity');
 
     if (!parcel_id || !operation_type || !agri_product || !quantity) {
         return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 });
@@ -58,6 +61,7 @@ export async function POST(
             method: 'POST',
             headers: {
                 'Content-Type': 'application/ld+json',
+                Authorization: `Bearer ${session.user.accessToken}`
             },
             body: JSON.stringify(body),
         });
