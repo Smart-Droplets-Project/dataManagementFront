@@ -1,3 +1,12 @@
+## [2.1.1](https://github.com/Smart-Droplets-Project/dataManagementFront/compare/v2.1.0...v2.1.1) (2025-04-28)
+
+
+### Bug Fixes
+
+* Added client secret and modified keycloak constants ([a3e3da1](https://github.com/Smart-Droplets-Project/dataManagementFront/commit/a3e3da14e2f7f295378596ee40e61b513d9de4b5))
+* Fixed URL to include proxy endpoint ([b53f4e4](https://github.com/Smart-Droplets-Project/dataManagementFront/commit/b53f4e4745709683a47e2a65bc00c48d147e14df))
+* Quick fix of package-lock ([6927c2a](https://github.com/Smart-Droplets-Project/dataManagementFront/commit/6927c2a9b5949c084193f64a7ef563d0e408b6e6))
+
 # [2.1.0](https://github.com/Smart-Droplets-Project/dataManagementFront/compare/v2.0.2...v2.1.0) (2025-04-10)
 
 
