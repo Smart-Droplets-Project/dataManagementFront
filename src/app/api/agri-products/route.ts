@@ -3,9 +3,12 @@
 import { NextResponse } from "next/server";
 import { ENDPOINTS, CONTEXTS } from "@/lib/constants";
 import { AgriProductType } from "@/lib/interfaces";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export async function GET() {
-    
+    const session = await getServerSession(authOptions);
+
     const searchParams = {
         type: 'AgriProductType',
         limit: '100',
@@ -14,11 +17,12 @@ export async function GET() {
 
     try {
         const ulrQuery = new URLSearchParams(searchParams).toString();
-    
-        const url = new URL(`${ENDPOINTS.API_BASE_URL}?${ulrQuery}`).toString(); 
-        const response = await fetch (url, {
+
+        const url = new URL(`${ENDPOINTS.API_BASE_URL}?${ulrQuery}`).toString();
+        const response = await fetch(url, {
             headers: {
-                'Link': CONTEXTS.AGRIFARM
+                'Link': CONTEXTS.AGRIFARM,
+                Authorization: `Bearer ${session.user.accessToken}`
             }
         });
 
@@ -32,7 +36,7 @@ export async function GET() {
 
         return NextResponse.json(data);
 
-    } catch (err){
+    } catch (err) {
         console.error('Error fetching agri products:', err);
         return NextResponse.json({ error: 'Failed to fetch agri products' }, { status: 500 });
     }

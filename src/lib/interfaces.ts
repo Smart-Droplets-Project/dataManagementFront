@@ -35,9 +35,10 @@ export interface AgriParcel {
             type: string;
             features: [
                 {
+                    type: string;
                     geometry: {
                         type: string;
-                        coordinates: any;
+                        coordinates: number[] | number[][][];
                     }
                     properties: {
                         name: string;

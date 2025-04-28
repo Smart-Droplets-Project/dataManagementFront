@@ -7,6 +7,8 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 import { createGridOverPolygon } from '@/utils/geojson';
+import { validateGeoJsonFormat } from '@/utils/validateGeoJsonFormat';
+
 import { useParcelDrawer } from '@/contexts/ParcelDrawerContext';
 import { colors } from '../../theme/colors';
 import { AgriParcel, StateMessage } from '@/lib/interfaces';
@@ -108,9 +110,9 @@ class GeoJSONFeatureInfoControl extends L.Control {
 }
 
 const extractFeaturePolygon = (parcel: AgriParcel) => {
+    if (!validateGeoJsonFormat(parcel.location)) return null
 
     const features = parcel.location?.value.features;
-
     const geoJson = features && features.find(feature => feature.geometry.type === 'Polygon')
 
     const retval = {
@@ -129,8 +131,6 @@ const extractFeaturePolygon = (parcel: AgriParcel) => {
         geometry: geoJson?.geometry
     };
 
-    // if (!retval) return null;
-
     return retval as GeoJSON.Feature;
 }
 
@@ -144,10 +144,6 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ parcelList, selectedParcelId, tra
 
     const geoJsonList: GeoJSON.Feature[] = [];
 
-    parcelList.forEach((p: AgriParcel) => {
-        geoJsonList.push(extractFeaturePolygon(p))
-    });
-
     // const [gridSize, setGridSize] = useState(gridSizeOptions[0]);
 
     // const handleGridSizeChange = (event: SelectChangeEvent) => {
@@ -157,6 +153,11 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ parcelList, selectedParcelId, tra
     const gridSize = gridSizeOptions[0].value
 
     useEffect(() => {
+        parcelList.forEach((p: AgriParcel) => {
+            const featurePolygon = extractFeaturePolygon(p)
+            if (featurePolygon) geoJsonList.push(featurePolygon);
+        });
+
         if (typeof window !== 'undefined') {
             if (mapRef.current && !mapInstanceRef.current) {
                 // Initialize the map
@@ -262,9 +263,11 @@ const ParcelMap: React.FC<ParcelMapProps> = ({ parcelList, selectedParcelId, tra
                     if (!feature) {
                         feature = geoJsonList[0];
                     }
-                    const bounds = L.geoJSON(feature).getBounds();
-                    if (mapInstanceRef.current)
-                        mapInstanceRef.current.fitBounds(bounds);
+                    if (feature) {
+                        const bounds = L.geoJSON(feature).getBounds();
+                        if (mapInstanceRef.current)
+                            mapInstanceRef.current.fitBounds(bounds);
+                    }
                 };
 
                 fitBoundsToId(selectedParcelId);

@@ -1,7 +1,11 @@
 import { NextResponse } from 'next/server';
 import { ENDPOINTS, CONTEXTS } from '@/lib/constants';
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export async function GET() {
+    const session = await getServerSession(authOptions);
+
     try {
         const searchParams = {
             type: 'StateMessage',
@@ -14,6 +18,7 @@ export async function GET() {
         const response = await fetch(url, {
             headers: {
                 Link: CONTEXTS.AUTONOMOUSMOBILEROBOT,
+                Authorization: `Bearer ${session.user.accessToken}`
             },
             cache: 'no-store'
         });

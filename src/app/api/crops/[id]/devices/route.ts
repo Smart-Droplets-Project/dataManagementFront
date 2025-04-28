@@ -2,8 +2,12 @@
 import { NextResponse } from 'next/server';
 import { ENDPOINTS, CONTEXTS } from '@/lib/constants';
 import { Device } from '@/lib/interfaces';
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export async function GET(request: Request, props: { params: Promise<{ id: string }> }) {
+    const session = await getServerSession(authOptions);
+
     try {
         const searchParams: any = {
             type: 'Device',
@@ -23,7 +27,8 @@ export async function GET(request: Request, props: { params: Promise<{ id: strin
         const response = await fetch(url, {
             headers: {
                 'Link': CONTEXTS.DEVICE,
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${session.user.accessToken}`
             }
         });
 

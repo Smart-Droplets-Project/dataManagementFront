@@ -3,9 +3,12 @@
 import { NextResponse } from "next/server";
 import { CONTEXTS, ENDPOINTS } from "@/lib/constants";
 import { CommandMessage } from "@/lib/interfaces";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export async function GET() {
-    
+    const session = await getServerSession(authOptions);
+
 
     const searchParams = {
         type: 'CommandMessage',
@@ -20,10 +23,11 @@ export async function GET() {
 
         const response = await fetch(url, {
             headers: {
-                'Link': CONTEXTS.AUTONOMOUSMOBILEROBOT
+                'Link': CONTEXTS.AUTONOMOUSMOBILEROBOT,
+                Authorization: `Bearer ${session.user.accessToken}`
             }
         });
-        
+
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
