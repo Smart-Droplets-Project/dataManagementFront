@@ -8,5 +8,5 @@ export default withAuth({
 });
 
 export const config = {
-  matcher: ["/api/:path*", "/", "/parcels"]
+  // matcher: ["/api/:path*", "/", "/parcels"] TODO: temp disable of config matchers in middleware
 };
