@@ -8,28 +8,11 @@ export function validateGeoJsonFormat(input: AgriParcel['location']): boolean {
   const value = input.value;
   if (value.type !== "FeatureCollection" || !Array.isArray(value.features)) return false;
 
-  for (const feature of value.features) {
-    if (
-      !feature ||
-      feature.type !== "Feature" ||
-      typeof feature.properties !== "object" ||
-      typeof feature.geometry !== "object"
-    ) {
-      return false;
-    }
+  const polygon = value.features.find(element => element.geometry.type === "Polygon");
 
-    const geometry = feature.geometry;
-    if (!["Point", "Polygon", "MultiLineString"].includes(geometry.type)) return false;
-    if (!Array.isArray(geometry.coordinates)) return false;
+  const coordinates = polygon?.geometry.coordinates;
 
-    if (geometry.type === "Polygon") {
-      if (!Array.isArray(geometry.coordinates[0])) return false;
-    }
-
-    if (geometry.type === "MultiLineString") {
-      if (!Array.isArray(geometry.coordinates[0])) return false;
-    }
-  }
-
-  return true;
+  return Array.isArray(coordinates) 
+    && Array.isArray(coordinates[0])
+    && Array.isArray(coordinates[0][0]);
 }
