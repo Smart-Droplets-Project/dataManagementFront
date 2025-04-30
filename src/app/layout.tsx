@@ -19,6 +19,8 @@ import ClientLocalizationProvider from "@/utils/ClientLocalizationProvider";
 import AuthProvider from "@/utils/AuthProvider";
 import { Suspense } from "react";
 
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export const metadata: Metadata = {
   title: "Smart Droplets Dashboard",
@@ -82,11 +84,13 @@ const BRANDING: Branding = {
   logo: <img src='/images/Smart-droplets-logo.svg' alt="" />
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await getServerSession(authOptions);
+  
   return (
     <html lang="en">
       <body style={{height: '100vh'}}>
@@ -94,7 +98,7 @@ export default function RootLayout({
           <ClientLocalizationProvider>
             <Suspense>
               <NextAppProvider navigation={NAVIGATION} theme={theme} branding={BRANDING}>
-                <AuthProvider>
+                <AuthProvider session={session}>
                   {children}
                 </AuthProvider>
               </NextAppProvider>
