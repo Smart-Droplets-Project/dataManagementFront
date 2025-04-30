@@ -1,3 +1,10 @@
+## [2.1.2](https://github.com/Smart-Droplets-Project/dataManagementFront/compare/v2.1.1...v2.1.2) (2025-04-30)
+
+
+### Bug Fixes
+
+* Fixed GeoJSON validation function ([d36ea03](https://github.com/Smart-Droplets-Project/dataManagementFront/commit/d36ea035d6d199873036a647366d813205794f6a))
+
 ## [2.1.1](https://github.com/Smart-Droplets-Project/dataManagementFront/compare/v2.1.0...v2.1.1) (2025-04-28)
 
 
