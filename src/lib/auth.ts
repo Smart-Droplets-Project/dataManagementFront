@@ -62,6 +62,7 @@ export const authOptions = {
     signIn: "/login",
   },
   secret: AUTH.NEXTAUTH_SECRET,
+  useSecureCookies: false // TODO: check if this is necesary and remove if not
 };
 
 export default NextAuth(authOptions);
