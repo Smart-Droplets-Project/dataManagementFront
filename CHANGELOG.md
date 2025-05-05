@@ -1,3 +1,10 @@
+## [2.1.3](https://github.com/Smart-Droplets-Project/dataManagementFront/compare/v2.1.2...v2.1.3) (2025-05-05)
+
+
+### Bug Fixes
+
+* Added dummy route to FE validation ([53d0aad](https://github.com/Smart-Droplets-Project/dataManagementFront/commit/53d0aadd67fe9c26302dee536ea0d1c0e796e1cc))
+
 ## [2.1.2](https://github.com/Smart-Droplets-Project/dataManagementFront/compare/v2.1.1...v2.1.2) (2025-04-30)
 
 
