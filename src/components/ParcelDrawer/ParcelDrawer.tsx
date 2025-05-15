@@ -4,6 +4,7 @@ import Grid from '@mui/material/Grid2';
 import { useParcelDrawer } from "@/contexts/ParcelDrawerContext";
 import ParcelDrawerMeasurementsTab from "@/components/ParcelDrawer/ParcelDrawerMeasurementsTab";
 import ParcelDrawerOperationsTab from "@/components/ParcelDrawer/ParcelDrawerOperationsTab/ParcelDrawerOperationsTab";
+import ParcelDrawerWeatherTab from "@/components/ParcelDrawer/ParcelDrawerWeatherTab";
 import { useState } from "react";
 
 function TabPanel({ children, value, index }: { children: React.ReactNode; value: number; index: number }) {
@@ -44,6 +45,7 @@ const ParcelDrawer = () => {
                   <Tabs value={tab} onChange={handleTabChange} variant="fullWidth">
                     <Tab label="Device Measurements" />
                     <Tab label="Parcel Operations" />
+                    <Tab label="Parcel Weather" />
                   </Tabs>
 
                   {/* Tab Panels */}
@@ -52,6 +54,9 @@ const ParcelDrawer = () => {
                   </TabPanel>
                   <TabPanel value={tab} index={1}>
                     <ParcelDrawerOperationsTab selectedParcel={selectedParcel}></ParcelDrawerOperationsTab>
+                  </TabPanel>
+                      <TabPanel value={tab} index={2}>
+                    <ParcelDrawerWeatherTab selectedParcel={selectedParcel}></ParcelDrawerWeatherTab>
                   </TabPanel>
                 </Grid>
               </>
