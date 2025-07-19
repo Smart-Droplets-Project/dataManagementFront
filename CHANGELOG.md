@@ -1,3 +1,10 @@
+## [2.1.4](https://github.com/Smart-Droplets-Project/dataManagementFront/compare/v2.1.3...v2.1.4) (2025-07-19)
+
+
+### Bug Fixes
+
+* Testing whether Orion is accessible through the SD domain ([4a8bd95](https://github.com/Smart-Droplets-Project/dataManagementFront/commit/4a8bd950f23c4901db595938d7bd4d0cce7be489))
+
 ## [2.1.3](https://github.com/Smart-Droplets-Project/dataManagementFront/compare/v2.1.2...v2.1.3) (2025-05-05)
 
 
