@@ -161,3 +161,8 @@ export interface StateMessage {
         remainingPercentage: number
     }
 }
+
+export interface MeasurementExperiment {
+    id: string
+    name: string
+}

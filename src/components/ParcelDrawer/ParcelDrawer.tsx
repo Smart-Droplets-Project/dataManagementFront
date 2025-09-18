@@ -5,6 +5,7 @@ import { useParcelDrawer } from "@/contexts/ParcelDrawerContext";
 import ParcelDrawerMeasurementsTab from "@/components/ParcelDrawer/ParcelDrawerMeasurementsTab";
 import ParcelDrawerOperationsTab from "@/components/ParcelDrawer/ParcelDrawerOperationsTab/ParcelDrawerOperationsTab";
 import { useState } from "react";
+import ParcelDrawerImagesTab from "./ParcelDrawerImagesTab";
 
 function TabPanel({ children, value, index }: { children: React.ReactNode; value: number; index: number }) {
   return (
@@ -44,6 +45,7 @@ const ParcelDrawer = () => {
                   <Tabs value={tab} onChange={handleTabChange} variant="fullWidth">
                     <Tab label="Device Measurements" />
                     <Tab label="Parcel Operations" />
+                    <Tab label="Measurement Images" />
                   </Tabs>
 
                   {/* Tab Panels */}
@@ -52,6 +54,9 @@ const ParcelDrawer = () => {
                   </TabPanel>
                   <TabPanel value={tab} index={1}>
                     <ParcelDrawerOperationsTab selectedParcel={selectedParcel}></ParcelDrawerOperationsTab>
+                  </TabPanel>
+                  <TabPanel value={tab} index={2}>
+                    <ParcelDrawerImagesTab selectedParcel={selectedParcel}></ParcelDrawerImagesTab>
                   </TabPanel>
                 </Grid>
               </>
