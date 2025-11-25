@@ -71,6 +71,10 @@ export interface DeviceMeasurement {
         type: string,
         value: string
     };
+    alternateName: {
+        type: string,
+        value: string
+    };
 }
 
 export interface QuantumLeapTimeSeriesData {
