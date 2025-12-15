@@ -71,6 +71,10 @@ export interface DeviceMeasurement {
         type: string,
         value: string
     };
+    alternateName: {
+        type: string,
+        value: string
+    };
 }
 
 export interface QuantumLeapTimeSeriesData {
@@ -160,4 +164,45 @@ export interface StateMessage {
     battery: {
         remainingPercentage: number
     }
+}
+
+export interface WeatherForecast {
+    id: string;
+    type: string;
+    description: string;
+    atmosphericPressure: number;
+    dateIssued: string;
+    dayMaximum: {
+        temperature: number;
+        feelLikesTemperature: number;
+        relativeHumidity: number;
+    };
+    dayMinimum: {
+        temperature: number;
+        feelLikesTemperature: number;
+        relativeHumidity: number;
+    };
+    feelLikesTemperature: number;
+    gustSpeed: number;
+    precipitation: number;
+    refPointOfInterest: string;
+    relativeHumidity: number;
+    temperature: number;
+    uVIndexMax: number;
+    visibility: number;
+    weatherType: string;
+    windDirection: number;
+    windSpeed: number;
+    dataProvider: string;
+    dateCreated: string;
+    dateModified: string;
+    location: {
+        type: string;
+        coordinates: [number, number];
+    };
+}
+
+export interface MeasurementExperiment {
+    id: string
+    name: string
 }
