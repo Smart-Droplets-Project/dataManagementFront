@@ -71,6 +71,10 @@ export interface DeviceMeasurement {
         type: string,
         value: string
     };
+    alternateName: {
+        type: string,
+        value: string
+    };
 }
 
 export interface QuantumLeapTimeSeriesData {
@@ -160,4 +164,9 @@ export interface StateMessage {
     battery: {
         remainingPercentage: number
     }
+}
+
+export interface MeasurementExperiment {
+    id: string
+    name: string
 }
