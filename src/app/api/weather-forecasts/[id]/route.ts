@@ -3,11 +3,13 @@ import { ENDPOINTS, CONTEXTS } from "@/lib/constants";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
-export async function GET( request: Request, { params }: { params: { id: string } }) {
+export async function GET( request: Request, props: { params: Promise<{ id: string }> }) {
 
     const session = await getServerSession(authOptions);
 
-    const { id } = params;
+    const params = await props.params;
+    const id = params.id;
+
     const { searchParams } = new URL(request.url);
     const date = searchParams.get("date");
 
