@@ -17,9 +17,9 @@ const ParcelMapWrapper: React.FC<ParcelMapProps> = ({ parcelList, selectedParcel
 
     useEffect(() => {
         const fetchTractorStateMessages = async () => {
-            const res = await fetch('/api/state-messages');
-            const data = await res.json() as StateMessage[];
-            setTractorStateMessages(data);
+            // const res = await fetch('/api/state-messages');
+            // const data = await res.json() as StateMessage[];
+            // setTractorStateMessages(data);
         };
 
         fetchTractorStateMessages();

@@ -47,7 +47,7 @@ const ParcelDrawer = () => {
                     <Tab label="Device Measurements" />
                     <Tab label="Parcel Operations" />
                     <Tab label="Parcel Weather" />
-                    <Tab label="Measurement Images" />
+                    <Tab label="LAI Experiments" />
                   </Tabs>
 
                   {/* Tab Panels */}

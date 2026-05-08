@@ -85,8 +85,8 @@ function Row(props: { row: AgriParcel }) {
                                                                     (coordinates[0] as number[][]).map((coordinate, coordIndex) => (
                                                                         <TableRow key={`${featureIndex}-${coordIndex}`}>
                                                                             <TableCell component="td" scope="row">{coordIndex == 0 && (name == "rows" ? "Parcel Rows" : "Parcel Borders")}</TableCell>
-                                                                            <TableCell component="td" align='right'>{coordinate[0]}</TableCell>
                                                                             <TableCell component="td" align='right'>{coordinate[1]}</TableCell>
+                                                                            <TableCell component="td" align='right'>{coordinate[0]}</TableCell>
                                                                         </TableRow>
                                                                     ))
                                                                     :

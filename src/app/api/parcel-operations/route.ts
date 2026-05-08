@@ -1,7 +1,7 @@
 // app/api/parcel-operations/route.ts
 
 import { NextResponse } from "next/server";
-import { CONTEXTS, ENDPOINTS } from "@/lib/constants";
+import { CONTEXTS } from "@/lib/constants";
 import { randomUUID } from "crypto";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -57,18 +57,18 @@ export async function POST(
             ]
         }
 
-        const response = await fetch(`${ENDPOINTS.API_BASE_URL}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/ld+json',
-                Authorization: `Bearer ${session.user.accessToken}`
-            },
-            body: JSON.stringify(body),
-        });
+        // const response = await fetch(`${ENDPOINTS.API_BASE_URL}`, {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/ld+json',
+        //         Authorization: `Bearer ${session.user.accessToken}`
+        //     },
+        //     body: JSON.stringify(body),
+        // });
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        // if (!response.ok) {
+        //     throw new Error(`HTTP error! status: ${response.status}`);
+        // }
 
         return new NextResponse(null, { status: 200 });
 

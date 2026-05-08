@@ -1,6 +1,6 @@
 'use client';
 import GenericSnackbar from "@/components/GenericSnackbar";
-import { Box, Button, IconButton, InputAdornment, Link, TextField, Typography } from "@mui/material";
+import { Button, IconButton, InputAdornment, TextField, Typography } from "@mui/material";
 import Grid from '@mui/material/Grid2';
 import { useState } from "react";
 
@@ -105,11 +105,11 @@ const Login = () => {
                         variant="contained">
                         Log in
                     </Button>
-                    <Box display={"flex"}>
+                    {/* <Box display={"flex"}>
                         <Link textAlign={"center"} href="/register" underline="none">
                             {'Don\'t have an account yet? Register for free'}
                         </Link>
-                    </Box>
+                    </Box> */}
                 </Grid>
             </Grid>
             <GenericSnackbar
