@@ -1,3 +1,16 @@
+# [2.2.0](https://github.com/Smart-Droplets-Project/dataManagementFront/compare/v2.1.4...v2.2.0) (2026-05-08)
+
+
+### Bug Fixes
+
+* prevent listing outside valid dates and refactor loading logic ([5c5f5d1](https://github.com/Smart-Droplets-Project/dataManagementFront/commit/5c5f5d1c6f1d992eec1da933682531e535c91176))
+* Removed registration button; switched images around ([1ea9964](https://github.com/Smart-Droplets-Project/dataManagementFront/commit/1ea99640c3de050014497f507fe4edbcc365b511))
+
+
+### Features
+
+* added weatherForecast for Parcel feature ([f12805d](https://github.com/Smart-Droplets-Project/dataManagementFront/commit/f12805d09f247e9e79409ebbe7e778eadc2e44a5))
+
 ## [2.1.4](https://github.com/Smart-Droplets-Project/dataManagementFront/compare/v2.1.3...v2.1.4) (2025-07-19)
 
 
